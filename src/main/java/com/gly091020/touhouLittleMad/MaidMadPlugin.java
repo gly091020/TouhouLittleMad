@@ -15,6 +15,7 @@ import java.util.List;
 public class MaidMadPlugin implements ILittleMaid {
     @Override
     public void addExtraMaidBrain(ExtraMaidBrainManager manager) {
+        // 女仆生气时会攻击主人
         manager.addExtraMaidBrain(new MadExtraMaidBrain());
     }
 

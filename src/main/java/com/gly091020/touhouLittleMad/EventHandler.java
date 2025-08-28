@@ -1,14 +1,15 @@
 package com.gly091020.touhouLittleMad;
 
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAfterEatEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidTickEvent;
+import com.github.tartaricacid.touhoulittlemaid.api.event.*;
+import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
 import com.gly091020.touhouLittleMad.util.CooldownKeys;
 import com.gly091020.touhouLittleMad.util.MadMaidFunction;
 import com.gly091020.touhouLittleMad.util.MaidMadExtraData;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -64,20 +65,45 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onDie(MaidDeathEvent event){
-        // 女仆死亡减少50心情并冷却恢复10分钟
+        // 女仆死亡减少50心情并冷却恢复10分钟（最高110防止复活了接着打）
         if(event.getMaid().level().isClientSide){return;}
         if(event.getMaid() instanceof MaidMadExtraData data){
-            data.setHandledMood(data.getMood() + 50);
+            data.setMood(Math.clamp(data.getMood() + 50, 50, 110));
             data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 60 * 20);
         }
     }
 
     @SubscribeEvent
     public static void onEat(MaidAfterEatEvent event){
+        // 吃东西加5心情
         if(event.getMaid().level().isClientSide){return;}
         if(event.getMaid() instanceof MaidMadExtraData data &&
                 MadMaidFunction.canRecoverMood(event.getMaid())){
             data.setHandledMood(data.getMood() - 5);
+        }
+    }
+    @SubscribeEvent
+    public static void onInteractMaid(InteractMaidEvent event){
+        // 女仆生气打人时不能打开ui
+        if(event.getMaid() instanceof MaidMadExtraData data &&
+                data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
+            event.getPlayer().sendSystemMessage(Component.literal("占位符：不能打开女仆界面"));  // todo:占位文本
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRender(RenderMaidEvent event){
+        // 生气粒子
+        if(Minecraft.getInstance().isPaused()){return;}
+        if(event.getMaid() instanceof MaidMadExtraData data &&
+                data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
+            var maid = event.getMaid().asEntity();
+            if(maid.level().getGameTime() % 10 != 0){return;}
+            double d0 = maid.getRandom().nextGaussian() * 0.02;
+            double d1 = maid.getRandom().nextGaussian() * 0.02;
+            double d2 = maid.getRandom().nextGaussian() * 0.02;
+            maid.level().addParticle(ParticleTypes.ANGRY_VILLAGER, maid.getRandomX(1.0F), maid.getRandomY() + (double)0.8F, maid.getRandomZ(1.0F), d0, d1, d2);
         }
     }
 }
