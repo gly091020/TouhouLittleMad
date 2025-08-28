@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.gly091020.touhouLittleMad.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MaidDataMixin",
+    "SleepingMixins$StopSleepingByHurtMixin",
+    "SleepingMixins$StopSleepingMixin"
+  ],
+  "client": [
+    "MaidInfoMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
