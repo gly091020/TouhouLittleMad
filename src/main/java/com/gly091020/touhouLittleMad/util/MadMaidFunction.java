@@ -17,6 +17,7 @@ public class MadMaidFunction {
         if(maid instanceof MaidMadExtraData data){
             list.add(Component.literal("LittleMad调试："));
             list.add(Component.literal("内部心情：" + Objects.toString(data.getMood())));
+            list.add(Component.literal("心情等级：" + data.getMoodLevel().getDebugText()));
         }
     }
 }

@@ -23,9 +23,9 @@ public class EventHandler {
         var owner = event.getMaid().getOwner();
         if(owner != null){
             if(owner == event.getSource().getEntity()){
-                data.setMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 20));
+                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 20));
             }else if(data.getCooldown().notInCooldown(CooldownKeys.HURT)){
-                data.setMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 5));
+                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 5));
                 data.getCooldown().setTimer(CooldownKeys.HURT, 50);
             }
             data.getCooldown().setTimer(CooldownKeys.RECOVER, 60 * 20);
@@ -41,7 +41,7 @@ public class EventHandler {
             var cooldown = data.getCooldown();
             cooldown.tick();
             if(cooldown.notInCooldown(CooldownKeys.RECOVER) && MadMaidFunction.canRecoverMood(maid)){
-                data.setMood(data.getMood() - 1);
+                data.setHandledMood(data.getMood() - 1);
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 20);
             }
         }
@@ -54,10 +54,10 @@ public class EventHandler {
         if(event.getMaid() instanceof MaidMadExtraData data){
             if (event.isByHurt()) {
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 2 * 60 * 20);
-                data.setMood(data.getMood() + 30);
+                data.setHandledMood(data.getMood() + 30);
             }else{
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 20);
-                data.setMood(data.getMood() - 10);
+                data.setHandledMood(data.getMood() - 10);
             }
         }
     }
@@ -67,7 +67,7 @@ public class EventHandler {
         // 女仆死亡减少50心情并冷却恢复10分钟
         if(event.getMaid().level().isClientSide){return;}
         if(event.getMaid() instanceof MaidMadExtraData data){
-            data.setMood(data.getMood() + 50);
+            data.setHandledMood(data.getMood() + 50);
             data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 60 * 20);
         }
     }
@@ -77,7 +77,7 @@ public class EventHandler {
         if(event.getMaid().level().isClientSide){return;}
         if(event.getMaid() instanceof MaidMadExtraData data &&
                 MadMaidFunction.canRecoverMood(event.getMaid())){
-            data.setMood(data.getMood() - 5);
+            data.setHandledMood(data.getMood() - 5);
         }
     }
 }
