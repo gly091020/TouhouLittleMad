@@ -67,7 +67,7 @@ public abstract class MaidDataMixin implements MaidMadExtraData {
         ((EntityMaid)(Object)this).getEntityData().set(MOOD, Math.clamp((int)(getMood() + add * magnification), 0, 180));
     }
 
-    @Unique
+    @Override
     public void setMood(int mood) {
         ((EntityMaid)(Object)this).getEntityData().set(MOOD, Math.clamp(mood, 0, 180));
     }
