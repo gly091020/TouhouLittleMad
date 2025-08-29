@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.implement.Text
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.touhouLittleMad.LittleMadMod;
 import com.gly091020.touhouLittleMad.MoodLevelType;
+import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
 import com.gly091020.touhouLittleMad.util.MaidCooldown;
 import com.gly091020.touhouLittleMad.util.MaidMadExtraData;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
@@ -75,12 +77,18 @@ public abstract class MaidDataMixin implements MaidMadExtraData {
                     "心情变化：" + Objects.toString(add * magnification)
             ), TextChatBubbleData.TYPE_1, 1));
         }
-        ((EntityMaid)(Object)this).getEntityData().set(MOOD, Math.clamp((int)(getMood() + add * magnification), 0, 180));
+        setMood((int)(getMood() + add * magnification));
     }
 
     @Override
     public void setMood(int mood) {
-        ((EntityMaid)(Object)this).getEntityData().set(MOOD, Math.clamp(mood, 0, 180));
+        var oldLevel = getMoodLevel();
+        var maid = ((EntityMaid)(Object)this);
+        maid.getEntityData().set(MOOD, Math.clamp(mood, 0, 180));
+        var newLevel = getMoodLevel();
+        if(oldLevel != newLevel){
+            NeoForge.EVENT_BUS.post(new MaidChangeMoodLevelEvent(maid, oldLevel, newLevel));
+        }
     }
 
     @Unique

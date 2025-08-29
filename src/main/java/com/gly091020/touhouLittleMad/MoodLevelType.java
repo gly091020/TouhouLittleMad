@@ -41,4 +41,18 @@ public enum MoodLevelType {
             default -> {return "未知";}
         }
     }
+
+    public int getAttackSpeed(){
+        switch (this){
+            case GOOD -> {
+                return 8;
+            }
+            case BAD, MAD -> {
+                return 10;
+            }
+            default -> {
+                return 4;
+            }
+        }
+    }
 }

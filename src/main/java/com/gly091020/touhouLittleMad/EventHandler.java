@@ -2,6 +2,7 @@ package com.gly091020.touhouLittleMad;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
+import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
 import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
 import com.gly091020.touhouLittleMad.util.CooldownKeys;
 import com.gly091020.touhouLittleMad.util.MadMaidFunction;
@@ -10,6 +11,7 @@ import com.gly091020.touhouLittleMad.util.TaskMoodRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -49,6 +51,11 @@ public class EventHandler {
             var probability = TaskMoodRegistry.getProbability(maid.getTask().getClass());
             if(probability > 0 && maid.getRandom().nextFloat() < probability){
                 data.setHandledMood(data.getMood() + 1);
+            }
+            if(data.getMoodLevel() == MoodLevelType.GOOD && cooldown.notInCooldown(CooldownKeys.ADD_POINT)){
+                // 女仆开心时增加好感度并冷却8~10分钟
+                maid.getFavorabilityManager().add(1);
+                cooldown.setTimer(CooldownKeys.ADD_POINT, (int) ((8 + 2 * maid.getRandom().nextFloat()) * 10 * 20));
             }
         }
     }
@@ -109,6 +116,15 @@ public class EventHandler {
             double d1 = maid.getRandom().nextGaussian() * 0.02;
             double d2 = maid.getRandom().nextGaussian() * 0.02;
             maid.level().addParticle(ParticleTypes.ANGRY_VILLAGER, maid.getRandomX(1.0F), maid.getRandomY() + (double)0.8F, maid.getRandomZ(1.0F), d0, d1, d2);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChangeMoodLevel(MaidChangeMoodLevelEvent event){
+        // 女仆心情好时增加攻击速度（生气也会）
+        var attack_speed = event.getMaid().getAttribute(Attributes.ATTACK_SPEED);
+        if(attack_speed != null){
+            attack_speed.setBaseValue(event.getNewLevel().getAttackSpeed());
         }
     }
 }
