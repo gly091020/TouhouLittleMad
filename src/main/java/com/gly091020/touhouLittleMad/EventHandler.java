@@ -2,6 +2,7 @@ package com.gly091020.touhouLittleMad;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
+import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
 import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
 import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
 import com.gly091020.touhouLittleMad.util.CooldownKeys;
@@ -63,14 +64,18 @@ public class EventHandler {
     @SubscribeEvent
     public static void stopSleepEvent(MaidStopSleepingEvent event){
         // 女仆起床如果是被攻击扣30点心情并冷却回复两分钟，否则回复10点心情
-        if(event.getMaid().level().isClientSide){return;}
-        if(event.getMaid() instanceof MaidMadExtraData data){
+        var maid = event.getMaid();
+        if(maid.level().isClientSide){return;}
+        if(maid instanceof MaidMadExtraData data){
             if (event.isByHurt()) {
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 2 * 60 * 20);
                 data.setHandledMood(data.getMood() + 30);
             }else{
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 20);
                 data.setHandledMood(data.getMood() - 10);
+                if(data.getMoodLevel() == MoodLevelType.GOOD){
+                    maid.goalSelector.addGoal(10, new MaidSendGiftGoal(maid));
+                }
             }
         }
     }
