@@ -1,14 +1,17 @@
 package com.gly091020.touhouLittleMad.mixin;
 
+import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.implement.TextChatBubbleData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.touhouLittleMad.LittleMadMod;
 import com.gly091020.touhouLittleMad.MoodLevelType;
 import com.gly091020.touhouLittleMad.util.MaidCooldown;
 import com.gly091020.touhouLittleMad.util.MaidMadExtraData;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -17,6 +20,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Objects;
 
 @Implements({
         @Interface(
@@ -64,6 +70,11 @@ public abstract class MaidDataMixin implements MaidMadExtraData {
         } else if (mood < getMood()) {
             magnification = -getMoodLevel().getSubMagnification();
         }
+        if(LittleMadMod.debug){
+            ((EntityMaid)(Object)this).getChatBubbleManager().addChatBubble(TextChatBubbleData.create(20, Component.literal(
+                    "心情变化：" + Objects.toString(add * magnification)
+            ), TextChatBubbleData.TYPE_1, 1));
+        }
         ((EntityMaid)(Object)this).getEntityData().set(MOOD, Math.clamp((int)(getMood() + add * magnification), 0, 180));
     }
 
@@ -84,5 +95,15 @@ public abstract class MaidDataMixin implements MaidMadExtraData {
             LittleMadMod.LOGGER.warn("有客户端代码调用Cooldown");
         }
         return cooldown;
+    }
+
+    @Inject(method = "getAmbientSound", at = @At("TAIL"), cancellable = true)
+    public void getSound(CallbackInfoReturnable<SoundEvent> cir){
+        // 没有用事件系统因为无法区分音效
+        if(cir.getReturnValue() == null){return;}
+        var maid = ((EntityMaid)(Object)this);
+        if(maid instanceof MaidMadExtraData data && maid.getRandom().nextFloat() <= (Math.clamp(data.getMood(), 60, 120) - 60) / 60f){
+            cir.setReturnValue(null);
+        }
     }
 }

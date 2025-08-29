@@ -2,11 +2,11 @@ package com.gly091020.touhouLittleMad;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
 import com.gly091020.touhouLittleMad.util.CooldownKeys;
 import com.gly091020.touhouLittleMad.util.MadMaidFunction;
 import com.gly091020.touhouLittleMad.util.MaidMadExtraData;
+import com.gly091020.touhouLittleMad.util.TaskMoodRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -36,14 +36,19 @@ public class EventHandler {
     @SubscribeEvent
     public static void tick(MaidTickEvent event){
         // 心情每次回复冷却10秒
+        // 女仆工作时随机减少心情
         if(event.getEntity().level().isClientSide){return;}
-        if(event.getEntity() instanceof EntityMaid maid &&
-                event.getEntity() instanceof MaidMadExtraData data){
+        var maid = event.getMaid();
+        if(event.getEntity() instanceof MaidMadExtraData data){
             var cooldown = data.getCooldown();
             cooldown.tick();
             if(cooldown.notInCooldown(CooldownKeys.RECOVER) && MadMaidFunction.canRecoverMood(maid)){
                 data.setHandledMood(data.getMood() - 1);
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 20);
+            }
+            var probability = TaskMoodRegistry.getProbability(maid.getTask().getClass());
+            if(probability > 0 && maid.getRandom().nextFloat() < probability){
+                data.setHandledMood(data.getMood() + 1);
             }
         }
     }
@@ -85,7 +90,7 @@ public class EventHandler {
     @SubscribeEvent
     public static void onInteractMaid(InteractMaidEvent event){
         // 女仆生气打人时不能打开ui
-        if(event.getMaid() instanceof MaidMadExtraData data &&
+        if(!event.getPlayer().isCreative() && event.getMaid() instanceof MaidMadExtraData data &&
                 data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
             event.getPlayer().sendSystemMessage(Component.literal("占位符：不能打开女仆界面"));  // todo:占位文本
             event.setCanceled(true);
