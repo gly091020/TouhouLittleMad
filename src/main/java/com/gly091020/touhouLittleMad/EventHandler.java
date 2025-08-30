@@ -2,7 +2,6 @@ package com.gly091020.touhouLittleMad;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
-import com.github.tartaricacid.touhoulittlemaid.event.EntityHurtEvent;
 import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
 import com.gly091020.touhouLittleMad.datagen.DataGenerators;
 import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
@@ -15,7 +14,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
