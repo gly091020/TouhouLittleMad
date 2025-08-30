@@ -178,5 +178,8 @@ public class EventHandler {
             generator.addProvider(true, new DataGenerators.LootTableGen(packOutput, lookupProvider));
             generator.addProvider(true, new DataGenerators.AllAdvancementProvider(packOutput, lookupProvider, existingFileHelper));
         }
+        if(event.includeClient()){
+            generator.addProvider(true, new DataGenerators.AllItemModelProvider(packOutput, LittleMadMod.ModID, existingFileHelper));
+        }
     }
 }

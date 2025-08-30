@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.MaidEventTrigger;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.touhouLittleMad.LittleMadMod;
+import com.gly091020.touhouLittleMad.util.AdvancementIconItem;
 import com.gly091020.touhouLittleMad.util.AdvancementTriggerKeys;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
@@ -103,7 +105,7 @@ public class DataGenerators {
             }
 
             private AdvancementHolder genRoot(){
-                return genBase(InitItems.FAVORABILITY_TOOL_ADD.asItem(), "little_mad", "tamed_maid",
+                return genBase(AdvancementIconItem.findItem("little_mad"), "little_mad", "tamed_maid",
                         ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/advancements/backgrounds/stone.png"))
                         .build(ResourceLocation.fromNamespaceAndPath(LittleMadMod.ModID, "little_mad"));
             }
@@ -136,31 +138,44 @@ public class DataGenerators {
             }
 
             private AdvancementHolder genGift(AdvancementHolder parent){
-                return genBase(Items.DIAMOND, "maid_gift", AdvancementTriggerKeys.SEND_GIFT)
+                return genBase(AdvancementIconItem.findItem("maid_gift"), "maid_gift", AdvancementTriggerKeys.SEND_GIFT)
                         .parent(parent)
                         .build(ResourceLocation.fromNamespaceAndPath(LittleMadMod.ModID, "maid_gift"));
             }
 
             private AdvancementHolder genHurtByOwner(AdvancementHolder parent){
-                return genBase(InitItems.FAVORABILITY_TOOL_REDUCE.asItem(),
+                return genBase(AdvancementIconItem.findItem("maid_hurt_by_owner"),
                         "maid_hurt_by_owner", AdvancementTriggerKeys.HURT_BY_OWNER)
                         .parent(parent)
                         .build(ResourceLocation.fromNamespaceAndPath(LittleMadMod.ModID, "maid_hurt_by_owner"));
             }
 
             private AdvancementHolder genHurtOwner(AdvancementHolder parent){
-                return genBase(Items.DIAMOND_SWORD,
+                return genBase(AdvancementIconItem.findItem("maid_hurt_owner"),
                         "maid_hurt_owner", AdvancementTriggerKeys.HURT_OWNER)
                         .parent(parent)
                         .build(ResourceLocation.fromNamespaceAndPath(LittleMadMod.ModID, "maid_hurt_owner"));
             }
 
             private AdvancementHolder genMad(AdvancementHolder parent){
-                return genBase(Items.TNT,
+                return genBase(AdvancementIconItem.findItem("maid_mad"),
                         "maid_mad", AdvancementTriggerKeys.MAD, AdvancementType.CHALLENGE, true, true)
                         .parent(parent)
                         .build(ResourceLocation.fromNamespaceAndPath(LittleMadMod.ModID, "maid_mad"));
             }
+        }
+    }
+
+    public static class AllItemModelProvider extends ItemModelProvider{
+
+        public AllItemModelProvider(PackOutput output, String modID, ExistingFileHelper existingFileHelper) {
+            super(output, modID, existingFileHelper);
+        }
+
+        @Override
+        protected void registerModels() {
+            AdvancementIconItem.getItems().forEach(itemDeferredItem ->
+                    basicItem(itemDeferredItem.asItem()));
         }
     }
 }

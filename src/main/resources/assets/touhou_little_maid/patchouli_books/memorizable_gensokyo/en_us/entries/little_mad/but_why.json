@@ -1,0 +1,14 @@
+{
+  "sortnum": 999,
+  "name": "patchouli.touhou_little_mad.book.entries.maid.but_why.name",
+  "icon": "touhou_little_mad:advancement_maid_hurt_owner",
+  "category": "touhou_little_maid:touhou_little_mad",
+  "pages": [
+    {
+      "type": "link",
+      "text": "patchouli.touhou_little_mad.book.entries.maid.but_why.text.1",
+      "url": "https://www.mcmod.cn/class/20777.html",
+      "link_text": "patchouli.touhou_little_mad.book.entries.maid.but_why.text.2"
+    }
+  ]
+}
