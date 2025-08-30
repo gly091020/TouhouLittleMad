@@ -1,5 +1,10 @@
 {
-  "itemGroup.touhou_little_mad": "Example Mod Tab",
-  "block.touhou_little_mad.example_block": "Example Block",
-  "item.touhou_little_mad.example_item": "Example Item"
+  "gui.touhou_little_mad.not_open": "女仆生气时不能交互",
+  "entity.touhou_little_mad.mad.1": "生气.png",
+  "entity.touhou_little_mad.send_gift": "送礼.png",
+  "gui.touhou_little_mad.mood_level.bad": "生气",
+  "gui.touhou_little_mad.mood_level.mad": "疯狂",
+  "gui.touhou_little_mad.mood_level.normal": "正常",
+  "gui.touhou_little_mad.mood_level.good": "开心",
+  "gui.touhou_little_mad.mood_level.mood": "心情等级"
 }

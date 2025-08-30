@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -20,14 +21,14 @@ import net.neoforged.fml.common.EventBusSubscriber;
 public class EventHandler {
     @SubscribeEvent
     public static void onHurt(MaidHurtEvent event){
-        // 当女仆被攻击，如果是主人直接掉最多20心情，否则掉最多5心情并冷却50tick
+        // 当女仆被攻击，如果是主人直接掉最多30心情，否则掉最多5心情并冷却50tick
         // 心情回复冷却1分钟
         if(event.getMaid().level().isClientSide){return;}
         if(!(event.getMaid() instanceof MaidMadExtraData data)){return;}
         var owner = event.getMaid().getOwner();
         if(owner != null){
             if(owner == event.getSource().getEntity()){
-                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 20));
+                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 30));
             }else if(data.getCooldown().notInCooldown(CooldownKeys.HURT)){
                 data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 5));
                 data.getCooldown().setTimer(CooldownKeys.HURT, 50);
@@ -73,7 +74,7 @@ public class EventHandler {
             }else{
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 20);
                 data.setHandledMood(data.getMood() - 10);
-                if(data.getMoodLevel() == MoodLevelType.GOOD){
+                if(data.getMoodLevel() == MoodLevelType.GOOD && maid.getOwner() instanceof Player player && maid.position().closerThan(player.position(), 10)){
                     maid.goalSelector.addGoal(10, new MaidSendGiftGoal(maid));
                 }
             }
@@ -104,7 +105,7 @@ public class EventHandler {
         // 女仆生气打人时不能打开ui
         if(!event.getPlayer().isCreative() && event.getMaid() instanceof MaidMadExtraData data &&
                 data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
-            event.getPlayer().sendSystemMessage(Component.literal("占位符：不能打开女仆界面"));  // todo:占位文本
+            event.getPlayer().sendSystemMessage(Component.translatable("gui.touhou_little_mad.not_open"));
             event.setCanceled(true);
         }
     }
@@ -126,10 +127,18 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onChangeMoodLevel(MaidChangeMoodLevelEvent event){
-        // 女仆心情好时增加攻击速度（生气也会）
+        // 女仆心情好时增加攻击速度和攻击伤害（生气也会）
+        // （但是女仆好像不使用攻击速度属性）
         var attack_speed = event.getMaid().getAttribute(Attributes.ATTACK_SPEED);
         if(attack_speed != null){
             attack_speed.setBaseValue(event.getNewLevel().getAttackSpeed());
+        }
+
+        var attack = event.getMaid().getAttribute(Attributes.ATTACK_DAMAGE);
+        if(attack != null){
+            var manager = event.getMaid().getFavorabilityManager();
+            attack.setBaseValue(manager.getAttackByLevel(manager.getLevel()) *
+                    event.getNewLevel().getAttackDamageMagnification());
         }
     }
 }

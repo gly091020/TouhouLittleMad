@@ -1,5 +1,7 @@
 package com.gly091020.touhouLittleMad;
 
+import net.minecraft.network.chat.Component;
+
 public enum MoodLevelType {
     GOOD,NORMAL,BAD,MAD;
     public static MoodLevelType getType(int mood){
@@ -52,6 +54,27 @@ public enum MoodLevelType {
             }
             default -> {
                 return 4;
+            }
+        }
+    }
+
+    public Component getName(){
+        return Component.translatable("gui.touhou_little_mad.mood_level." + this.toString().toLowerCase());
+    }
+
+    public float getAttackDamageMagnification(){
+        switch (this){
+            case GOOD -> {
+                return 1.5f;
+            }
+            case BAD -> {
+                return 1.3f;
+            }
+            case MAD -> {
+                return 2f;
+            }
+            default -> {
+                return 1f;
             }
         }
     }

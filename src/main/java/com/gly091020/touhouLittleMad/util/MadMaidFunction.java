@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -79,5 +78,10 @@ public class MadMaidFunction {
             }
             return items.getFirst();
         }
+    }
+
+    public static Component getMadText(EntityMaid maid){
+        final int count = 1;
+        return Component.translatable("entity.touhou_little_mad.mad." + maid.getRandom().nextIntBetweenInclusive(1, count));
     }
 }

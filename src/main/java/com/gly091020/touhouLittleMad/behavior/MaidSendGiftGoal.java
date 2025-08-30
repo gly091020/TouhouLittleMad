@@ -9,8 +9,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.EnumSet;
 
@@ -45,7 +43,7 @@ public class MaidSendGiftGoal extends Goal {
         if(owner instanceof Player player){
             player.addItem(MadMaidFunction.getGift(maid));
         }
-        maid.getChatBubbleManager().addChatBubble(TextChatBubbleData.type2(Component.literal("占位符：送礼")));  // todo:文字需要补充
+        maid.getChatBubbleManager().addChatBubble(TextChatBubbleData.type2(Component.translatable("entity.touhou_little_mad.send_gift")));
         maid.goalSelector.removeGoal(this);
     }
 }
