@@ -3,21 +3,27 @@ package com.gly091020.touhouLittleMad;
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
 import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
+import com.gly091020.touhouLittleMad.datagen.DataGenerators;
 import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
 import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
-import com.gly091020.touhouLittleMad.util.CooldownKeys;
-import com.gly091020.touhouLittleMad.util.MadMaidFunction;
-import com.gly091020.touhouLittleMad.util.MaidMadExtraData;
-import com.gly091020.touhouLittleMad.util.TaskMoodRegistry;
+import com.gly091020.touhouLittleMad.util.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber
+import java.util.concurrent.CompletableFuture;
+
+@EventBusSubscriber(modid = LittleMadMod.ModID)
 public class EventHandler {
     @SubscribeEvent
     public static void onHurt(MaidHurtEvent event){
@@ -29,6 +35,9 @@ public class EventHandler {
         if(owner != null){
             if(owner == event.getSource().getEntity()){
                 data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 30));
+                if(owner instanceof ServerPlayer player){
+                    MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.HURT_BY_OWNER);
+                }
             }else if(data.getCooldown().notInCooldown(CooldownKeys.HURT)){
                 data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 5));
                 data.getCooldown().setTimer(CooldownKeys.HURT, 50);
@@ -139,6 +148,25 @@ public class EventHandler {
             var manager = event.getMaid().getFavorabilityManager();
             attack.setBaseValue(manager.getAttackByLevel(manager.getLevel()) *
                     event.getNewLevel().getAttackDamageMagnification());
+        }
+
+        if(event.getNewLevel() == MoodLevelType.MAD &&
+                event.getMaid().getOwner() instanceof ServerPlayer player){
+            MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.MAD);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDataGen(GatherDataEvent event){
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        if (event.includeServer()) {
+            generator.addProvider(true, new DataGenerators.LootTableGen(packOutput, lookupProvider));
+            generator.addProvider(true, new DataGenerators.AllAdvancementProvider(packOutput, lookupProvider, existingFileHelper));
+        }else{
+
         }
     }
 }

@@ -6,6 +6,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.task.*;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
+import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.gly091020.touhouLittleMad.LittleMadMod;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -14,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -81,7 +83,11 @@ public class MadMaidFunction {
     }
 
     public static Component getMadText(EntityMaid maid){
-        final int count = 1;
+        final int count = 5;
         return Component.translatable("entity.touhou_little_mad.mad." + maid.getRandom().nextIntBetweenInclusive(1, count));
+    }
+
+    public static void maidTrigger(ServerPlayer serverPlayer, String key){
+        InitTrigger.MAID_EVENT.value().trigger(serverPlayer, key);
     }
 }

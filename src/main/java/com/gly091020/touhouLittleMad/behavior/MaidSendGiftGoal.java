@@ -2,8 +2,10 @@ package com.gly091020.touhouLittleMad.behavior;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.implement.TextChatBubbleData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.gly091020.touhouLittleMad.util.AdvancementTriggerKeys;
 import com.gly091020.touhouLittleMad.util.MadMaidFunction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -42,6 +44,9 @@ public class MaidSendGiftGoal extends Goal {
         var owner = maid.getOwner();
         if(owner instanceof Player player){
             player.addItem(MadMaidFunction.getGift(maid));
+            if(player instanceof ServerPlayer serverPlayer){
+                MadMaidFunction.maidTrigger(serverPlayer, AdvancementTriggerKeys.SEND_GIFT);
+            }
         }
         maid.getChatBubbleManager().addChatBubble(TextChatBubbleData.type2(Component.translatable("entity.touhou_little_mad.send_gift")));
         maid.goalSelector.removeGoal(this);

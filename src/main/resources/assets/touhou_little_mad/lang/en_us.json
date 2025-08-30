@@ -1,10 +1,24 @@
 {
   "gui.touhou_little_mad.not_open": "女仆生气时不能交互",
-  "entity.touhou_little_mad.mad.1": "生气.png",
-  "entity.touhou_little_mad.send_gift": "送礼.png",
+  "entity.touhou_little_mad.mad.1": "╰（‵□′）╯",
+  "entity.touhou_little_mad.mad.2": "(╬▔皿▔)╯",
+  "entity.touhou_little_mad.mad.3": "(╯‵□′)╯︵┻━┻",
+  "entity.touhou_little_mad.mad.4": "(╯▔皿▔)╯",
+  "entity.touhou_little_mad.mad.5": "(σ｀д′)σ",
+  "entity.touhou_little_mad.send_gift": "最最最最喜欢主人了！",
   "gui.touhou_little_mad.mood_level.bad": "生气",
   "gui.touhou_little_mad.mood_level.mad": "疯狂",
   "gui.touhou_little_mad.mood_level.normal": "正常",
   "gui.touhou_little_mad.mood_level.good": "开心",
-  "gui.touhou_little_mad.mood_level.mood": "心情等级"
+  "gui.touhou_little_mad.mood_level.mood": "心情等级",
+  "advancements.touhou_little_mad.little_mad.title": "车万女仆：情绪萌动",
+  "advancements.touhou_little_mad.little_mad.description": "我想你应该对女仆好一点……",
+  "advancements.touhou_little_mad.maid_gift.title": "来自女仆的礼物",
+  "advancements.touhou_little_mad.maid_gift.description": "女仆在心情好时会给玩家送礼",
+  "advancements.touhou_little_mad.maid_hurt_by_owner.title": "你好……残忍",
+  "advancements.touhou_little_mad.maid_hurt_by_owner.description": "请不要攻击自己的女仆，她们不是工具人",
+  "advancements.touhou_little_mad.maid_hurt_owner.title": "发怒",
+  "advancements.touhou_little_mad.maid_hurt_owner.description": "这下变成车万奴仆了",
+  "advancements.touhou_little_mad.maid_mad.title": "接近疯狂",
+  "advancements.touhou_little_mad.maid_mad.description": "现在你和女仆只能活一个"
 }

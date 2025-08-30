@@ -3,8 +3,11 @@ package com.gly091020.touhouLittleMad.behavior;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskIdle;
 import com.gly091020.touhouLittleMad.MoodLevelType;
+import com.gly091020.touhouLittleMad.util.AdvancementTriggerKeys;
+import com.gly091020.touhouLittleMad.util.MadMaidFunction;
 import com.gly091020.touhouLittleMad.util.MaidMadExtraData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -40,6 +43,9 @@ public class IdieToMadBehavior extends Behavior<EntityMaid> {
                     maid.getSchedulePos().setIdlePos(owner.blockPosition());
 
                     if(trigger == 2){return;}
+                    if(owner instanceof ServerPlayer player){
+                        MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.HURT_OWNER);
+                    }
                     if(maid.getTask().getClass() != TaskIdle.class){
                         maid.setTask(new TaskIdle());
                         return;
