@@ -2,6 +2,7 @@ package com.gly091020.touhouLittleMad;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
+import com.github.tartaricacid.touhoulittlemaid.event.EntityHurtEvent;
 import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
 import com.gly091020.touhouLittleMad.datagen.DataGenerators;
 import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
@@ -14,12 +15,14 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -157,6 +160,15 @@ public class EventHandler {
     }
 
     @SubscribeEvent
+    public static void onMaidAttack(LivingDamageEvent.Post event){
+        // 女仆每次攻击主人恢复一点心情
+        // 不用 MaidAttackEvent 因为生气攻击不归这个事件管
+        if(event.getSource().getEntity() instanceof MaidMadExtraData data && data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
+            data.setHandledMood(data.getMood() - 1);
+        }
+    }
+
+    @SubscribeEvent
     public static void onDataGen(GatherDataEvent event){
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
@@ -165,8 +177,6 @@ public class EventHandler {
         if (event.includeServer()) {
             generator.addProvider(true, new DataGenerators.LootTableGen(packOutput, lookupProvider));
             generator.addProvider(true, new DataGenerators.AllAdvancementProvider(packOutput, lookupProvider, existingFileHelper));
-        }else{
-
         }
     }
 }

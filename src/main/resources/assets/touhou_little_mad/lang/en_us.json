@@ -33,5 +33,5 @@
   "patchouli.touhou_little_mad.book.entries.maid.mood_change.text.3": "钓鱼：1/2500$(br)收割、除草、甘蔗、火把、可可豆：1/2000$(br)蜂蜜、瓜类收割、挤牛奶、剪刀、喂食动物：1/1900$(br)灭火和喂食主人：1/1800$(br)所有远程攻击：1/1400$(br)近战攻击：1/1200$(br)空闲和游戏工作模式不会减少心情",
   "patchouli.touhou_little_mad.book.entries.maid.mood_effect.name": "情绪的作用",
   "patchouli.touhou_little_mad.book.entries.maid.mood_effect.text.1": "$(l)[增益]$()$(br)女仆开心时增加好感度并冷却8~10分钟。$(br)女仆在起床时如果开心且主人在周围10格内会向主人送礼。：",
-  "patchouli.touhou_little_mad.book.entries.maid.mood_effect.text.2": "$(l)[惩罚]$()$(br)女仆在不高兴时会减少对话。$(br)心情值高于90时会有概率罢工，每0.05秒有0%%~1%% 概率。$(br)心情值高于120（生气）时会近战攻击主人，此时不能与女仆交互。（打开界面，收回女仆等）$(br)女仆在攻击主人时不会进行其他操作，当主人死亡后女仆会设置心情值为110。（不经过处理）"
+  "patchouli.touhou_little_mad.book.entries.maid.mood_effect.text.2": "$(l)[惩罚]$()$(br)女仆在不高兴时会减少对话。$(br)心情值高于90时会有概率罢工，每0.05秒有0%%~1%% 概率。$(br)心情值高于120（生气）时会近战攻击主人，此时不能与女仆交互。（打开界面，收回女仆等）$(br)女仆在攻击主人时不会进行其他操作，女仆每次攻击主人恢复一点心情，当主人死亡后女仆会设置心情值为110。（不经过处理）"
 }

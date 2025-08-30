@@ -30,9 +30,9 @@ public abstract class MaidInfoMixin {
         }
         if(maid instanceof MaidMadExtraData data){
             list.add(Component.literal("§a█ ").withStyle(ChatFormatting.WHITE).append(
-                            Component.translatable("gui.touhou_little_mad.mood_level.mood"))
-                    .append(": ").withStyle(ChatFormatting.AQUA)
-                    .append(data.getMoodLevel().getName()).withStyle(ChatFormatting.WHITE));
+                            Component.translatable("gui.touhou_little_mad.mood_level.mood").append(": ")
+                                    .withStyle(ChatFormatting.AQUA))
+                    .append(data.getMoodLevel().getName()));
         }
         instance.renderComponentTooltip(font, list, x, y);
     }

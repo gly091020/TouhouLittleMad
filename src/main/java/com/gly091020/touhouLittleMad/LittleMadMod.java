@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 
 @Mod(LittleMadMod.ModID)
 public class LittleMadMod {
-    public static boolean debug = true;
+    public static boolean debug = false;
 
     public static final String ModID = "touhou_little_mad";
     public static final Logger LOGGER = LogUtils.getLogger();
