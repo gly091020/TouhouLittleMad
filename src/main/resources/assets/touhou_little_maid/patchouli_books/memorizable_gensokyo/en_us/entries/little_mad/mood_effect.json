@@ -1,0 +1,16 @@
+{
+  "sortnum": 4,
+  "name": "patchouli.touhou_little_mad.book.entries.maid.mood_effect.name",
+  "icon": "minecraft:diamond_sword",
+  "category": "touhou_little_maid:touhou_little_mad",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "patchouli.touhou_little_mad.book.entries.maid.mood_effect.text.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "patchouli.touhou_little_mad.book.entries.maid.mood_effect.text.2"
+    }
+  ]
+}

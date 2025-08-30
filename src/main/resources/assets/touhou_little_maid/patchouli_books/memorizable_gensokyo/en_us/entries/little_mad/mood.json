@@ -1,0 +1,12 @@
+{
+  "sortnum": 1,
+  "name": "patchouli.touhou_little_mad.book.entries.maid.mood.name",
+  "icon": "touhou_little_maid:favorability_tool_add",
+  "category": "touhou_little_maid:touhou_little_mad",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "patchouli.touhou_little_mad.book.entries.maid.mood.text.1"
+    }
+  ]
+}
