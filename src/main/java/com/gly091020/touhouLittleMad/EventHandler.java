@@ -10,7 +10,6 @@ import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
 import com.gly091020.touhouLittleMad.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
