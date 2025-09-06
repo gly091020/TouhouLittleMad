@@ -78,4 +78,24 @@ public enum MoodLevelType {
             }
         }
     }
+
+    public String getPrompt(){
+        switch (this){
+            case GOOD -> {
+                return "The maid is in a cheerful mood. She feels happy and positive, speaks kindly, and shows affection toward her master.";
+            }
+            case NORMAL -> {
+                return "The maid is in a neutral state. She behaves calmly and normally, without strong emotions, and maintains a polite and steady tone.";
+            }
+            case BAD -> {
+                return "The maid is in a bad mood. She feels annoyed and reluctant, speaks less, and occasionally shows dissatisfaction with her master.";
+            }
+            case MAD -> {
+                return "The maid is in an angry mood. She feels furious, may refuse to cooperate, uses harsh or aggressive language, and shows hostility toward her master.";
+            }
+            default -> {
+                return "";
+            }
+        }
+    }
 }

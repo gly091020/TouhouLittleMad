@@ -1,8 +1,10 @@
 package com.gly091020.touhouLittleMad;
 
+import com.github.tartaricacid.touhoulittlemaid.ai.service.llm.LLMMessage;
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.AddClothConfigEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
+import com.gly091020.touhouLittleMad.event.MaidAddChatListEvent;
 import com.gly091020.touhouLittleMad.event.MaidRespawnEvent;
 import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
 import com.gly091020.touhouLittleMad.config.ConfigScreenGetter;
@@ -203,5 +205,14 @@ public class EventHandler {
            if(runnable != null)runnable.run();
            MadMaidFunction.reloadConfig();
         });
+    }
+
+    @SubscribeEvent
+    public static void onAddChatList(MaidAddChatListEvent event){
+        // 心情会反馈到对话里
+        // 但不过AI好像太听话了一点不生气……
+        if(event.getMaid() instanceof MaidMadExtraData data){
+            event.addChat(LLMMessage.systemChat(event.getMaid(), data.getMoodLevel().getPrompt()));
+        }
     }
 }

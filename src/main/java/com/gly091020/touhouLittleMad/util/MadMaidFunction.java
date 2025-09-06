@@ -11,7 +11,6 @@ import com.gly091020.touhouLittleMad.LittleMadMod;
 import com.gly091020.touhouLittleMad.config.LittleMadConfig;
 import com.gly091020.touhouLittleMad.config.TaskMoodConfig;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;

@@ -4,6 +4,7 @@
   "package": "com.gly091020.touhouLittleMad.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MaidAIChatMixin",
     "MaidDataMixin",
     "MaidRespawnMixin",
     "PlaySnowBallMixin",
