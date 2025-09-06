@@ -37,6 +37,10 @@
   "patchouli.touhou_little_mad.book.entries.maid.but_why.name": "How Did You Come Up with This Mod?",
   "patchouli.touhou_little_mad.book.entries.maid.but_why.text.1": "The author misspelled 'Touhou Little Maid' as 'Touhou Little Mad' while coding the MaidCode...",
   "patchouli.touhou_little_mad.book.entries.maid.but_why.text.2": "MaidCode Link",
+  "patchouli.touhou_little_mad.book.entries.maid.mood_effect.image1.title": "\"You Should Accept My Whipping with a Smile\"",
+  "patchouli.touhou_little_mad.book.entries.maid.mood_effect.image1.text": "That's right, this is the mod cover",
+  "patchouli.touhou_little_mad.book.entries.maid.mood.image1.title": "Mood Level",
+  "patchouli.touhou_little_mad.book.entries.maid.mood.image1.text": "Mood level can be viewed in the Maid Information section",
 
   "config.touhou_little_mad.title": "Little Maid: Mood Flutter",
   "config.touhou_little_mad.enable": "§aEnable",

@@ -11,6 +11,12 @@
     {
       "type": "patchouli:text",
       "text": "patchouli.touhou_little_mad.book.entries.maid.mood_effect.text.2"
+    },
+    {
+      "type": "patchouli:image",
+      "images": ["touhou_little_mad:textures/gui/icon_picture.png"],
+      "title": "patchouli.touhou_little_mad.book.entries.maid.mood_effect.image1.title",
+      "text": "patchouli.touhou_little_mad.book.entries.maid.mood_effect.image1.text"
     }
   ]
 }

@@ -37,6 +37,10 @@
   "patchouli.touhou_little_mad.book.entries.maid.but_why.name": "你怎么想出这个模组的？",
   "patchouli.touhou_little_mad.book.entries.maid.but_why.text.1": "作者在编写女仆网管的时候把车万女仆拼成了车万奴仆……",
   "patchouli.touhou_little_mad.book.entries.maid.but_why.text.2": "关注女仆网管谢谢喵",
+  "patchouli.touhou_little_mad.book.entries.maid.mood_effect.image1.title": "“你要笑着接受我的鞭策”",
+  "patchouli.touhou_little_mad.book.entries.maid.mood_effect.image1.text": "没错，这就是模组封面",
+  "patchouli.touhou_little_mad.book.entries.maid.mood.image1.title": "情绪等级",
+  "patchouli.touhou_little_mad.book.entries.maid.mood.image1.text": "情绪等级可在女仆信息处查看",
 
   "config.touhou_little_mad.title": "车万女仆：情绪萌动 设置",
   "config.touhou_little_mad.enable": "§a启用",

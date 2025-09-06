@@ -7,6 +7,12 @@
     {
       "type": "patchouli:text",
       "text": "patchouli.touhou_little_mad.book.entries.maid.mood.text.1"
+    },
+    {
+      "type": "patchouli:image",
+      "images": ["touhou_little_mad:textures/gui/info.png"],
+      "title": "patchouli.touhou_little_mad.book.entries.maid.mood.image1.title",
+      "text": "patchouli.touhou_little_mad.book.entries.maid.mood.image1.text"
     }
   ]
 }
