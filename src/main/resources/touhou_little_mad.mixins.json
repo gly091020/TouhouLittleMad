@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MaidDataMixin",
+    "MaidRespawnMixin",
     "PlaySnowBallMixin",
     "SleepingMixins$StopSleepingByHurtMixin",
     "SleepingMixins$StopSleepingMixin",

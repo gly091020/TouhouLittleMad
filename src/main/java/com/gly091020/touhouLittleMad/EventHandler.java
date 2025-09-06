@@ -2,6 +2,7 @@ package com.gly091020.touhouLittleMad;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
+import com.gly091020.touhouLittleMad.behavior.MaidRespawnEvent;
 import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
 import com.gly091020.touhouLittleMad.datagen.DataGenerators;
 import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
@@ -9,6 +10,7 @@ import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
 import com.gly091020.touhouLittleMad.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -28,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 public class EventHandler {
     @SubscribeEvent
     public static void onHurt(MaidHurtEvent event){
-        // 当女仆被攻击，如果是主人直接掉最多30心情，否则掉最多5心情并冷却50tick
+        // 当女仆被攻击，如果是主人直接掉最多30心情，否则掉最多1心情并冷却50tick
         // 心情回复冷却1分钟
         if(event.getMaid().level().isClientSide){return;}
         if(!(event.getMaid() instanceof MaidMadExtraData data)){return;}
@@ -40,7 +42,7 @@ public class EventHandler {
                     MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.HURT_BY_OWNER);
                 }
             }else if(data.getCooldown().notInCooldown(CooldownKeys.HURT)){
-                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 5));
+                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10));
                 data.getCooldown().setTimer(CooldownKeys.HURT, 50);
             }
             data.getCooldown().setTimer(CooldownKeys.RECOVER, 60 * 20);
@@ -163,6 +165,14 @@ public class EventHandler {
         // 不用 MaidAttackEvent 因为生气攻击不归这个事件管
         if(event.getSource().getEntity() instanceof MaidMadExtraData data && data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
             data.setHandledMood(data.getMood() - 1);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMaidRespawn(MaidRespawnEvent event){
+        // 限制女仆心情范围
+        if(event.getMaid() instanceof MaidMadExtraData data){
+            data.setMood(Math.clamp(data.getMood(), 0, 110));
         }
     }
 

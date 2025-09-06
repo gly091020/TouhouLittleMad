@@ -29,7 +29,7 @@
   "patchouli.touhou_little_mad.book.entries.maid.mood_handle.text.1": "女仆的心情增加和减少不是固定值，所有的心情变化都会经过处理，如下：$(br)高兴时生气（数值增加）和高兴（数值减少）倍率为1。（不变）$(br)心情一般时生气倍率为1.5，高兴倍率为0.75。$(br)心情差时生气倍率为2，高兴倍率为0.5。$(br)疯狂时生气倍率和高兴倍率为0。（不变）",
   "patchouli.touhou_little_mad.book.entries.maid.mood_change.name": "情绪何时变化",
   "patchouli.touhou_little_mad.book.entries.maid.mood_change.text.1": "$(l)[恢复心情]$()$(br)女仆的心情在空闲时会自动恢复，每次心情恢复冷却10秒，而且要求非全天工作。$(br)自然睡醒恢复10心情，吃东西统一恢复5心情。",
-  "patchouli.touhou_little_mad.book.entries.maid.mood_change.text.2": "$(l)[生气（减少情绪值）]$()$(br)女仆死亡减少50心情并冷却恢复10分钟（最高110），受伤时如果不是主人减少0~5心情并冷却2.5秒，否则减少0~30心情。$(br)女仆惊醒（被攻击）扣30点心情并冷却心情回复计时器两分钟。$(br2)女仆工作时随机减少心情，工作模式和概率（每0.05秒减少1心情）如下（请翻页）：",
+  "patchouli.touhou_little_mad.book.entries.maid.mood_change.text.2": "$(l)[生气（减少情绪值）]$()$(br)女仆死亡减少50心情并冷却恢复10分钟（最高110），受伤时如果不是主人减少0~1心情并冷却2.5秒，否则减少0~30心情。$(br)女仆惊醒（被攻击）扣30点心情并冷却心情回复计时器两分钟。$(br2)女仆工作时随机减少心情，工作模式和概率（每0.05秒减少1心情）如下（请翻页）：",
   "patchouli.touhou_little_mad.book.entries.maid.mood_change.text.3": "钓鱼：1/2500$(br)收割、除草、甘蔗、火把、可可豆：1/2000$(br)蜂蜜、瓜类收割、挤牛奶、剪刀、喂食动物：1/1900$(br)灭火和喂食主人：1/1800$(br)所有远程攻击：1/1400$(br)近战攻击：1/1200$(br)空闲和游戏工作模式不会减少心情",
   "patchouli.touhou_little_mad.book.entries.maid.mood_effect.name": "情绪的作用",
   "patchouli.touhou_little_mad.book.entries.maid.mood_effect.text.1": "$(l)[增益]$()$(br)女仆开心时增加好感度并冷却8~10分钟。$(br)女仆在起床时如果开心且主人在周围10格内会向主人送礼。：",
