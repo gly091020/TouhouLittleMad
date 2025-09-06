@@ -1,4 +1,4 @@
-package com.gly091020.touhouLittleMad.behavior;
+package com.gly091020.touhouLittleMad.event;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.neoforged.bus.api.Event;
