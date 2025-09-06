@@ -8,6 +8,10 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.gly091020.touhouLittleMad.LittleMadMod;
+import com.gly091020.touhouLittleMad.config.LittleMadConfig;
+import com.gly091020.touhouLittleMad.config.TaskMoodConfig;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -89,5 +93,21 @@ public class MadMaidFunction {
 
     public static void maidTrigger(ServerPlayer serverPlayer, String key){
         InitTrigger.MAID_EVENT.value().trigger(serverPlayer, key);
+    }
+
+    public static void loadConfig(){
+        LittleMadMod.CONFIG = AutoConfig.getConfigHolder(LittleMadConfig.class).getConfig();
+        TaskMoodConfig.load();
+    }
+
+    public static void saveConfig(){
+        AutoConfig.getConfigHolder(LittleMadConfig.class).setConfig(LittleMadMod.CONFIG);
+        AutoConfig.getConfigHolder(LittleMadConfig.class).save();
+        TaskMoodConfig.save();
+    }
+
+    public static void reloadConfig(){
+        saveConfig();
+        loadConfig();
     }
 }

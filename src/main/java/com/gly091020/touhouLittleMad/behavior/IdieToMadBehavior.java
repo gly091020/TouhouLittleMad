@@ -42,6 +42,13 @@ public class IdieToMadBehavior extends Behavior<EntityMaid> {
 
                     maid.getSchedulePos().setIdlePos(owner.blockPosition());
 
+                    var target = maid.getTarget();
+                    if(target != null && !target.isAlive()) {
+                        data.setMood(100);
+                        trigger = 3;
+                        return;
+                    }
+
                     if(trigger == 2){return;}
                     if(owner instanceof ServerPlayer player){
                         MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.HURT_OWNER);
@@ -62,10 +69,6 @@ public class IdieToMadBehavior extends Behavior<EntityMaid> {
                     goal = new MeleeAttackGoal(maid, 1f, true);
                     maid.goalSelector.addGoal(1000, goal);
                     trigger = 2;
-                }
-                var target = maid.getTarget();
-                if(target != null && !target.isAlive()) {
-                    data.setMood(100);
                 }
             }else{
                 if(goal != null){

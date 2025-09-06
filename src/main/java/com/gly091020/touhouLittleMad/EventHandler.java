@@ -1,9 +1,11 @@
 package com.gly091020.touhouLittleMad;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
+import com.github.tartaricacid.touhoulittlemaid.api.event.client.AddClothConfigEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
-import com.gly091020.touhouLittleMad.behavior.MaidRespawnEvent;
+import com.gly091020.touhouLittleMad.event.MaidRespawnEvent;
 import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
+import com.gly091020.touhouLittleMad.config.ConfigScreenGetter;
 import com.gly091020.touhouLittleMad.datagen.DataGenerators;
 import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
 import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
@@ -160,10 +162,10 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onMaidAttack(LivingDamageEvent.Post event){
-        // 女仆每次攻击主人恢复一点心情
+        // 女仆每次攻击主人恢复十点心情
         // 不用 MaidAttackEvent 因为生气攻击不归这个事件管
         if(event.getSource().getEntity() instanceof MaidMadExtraData data && data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
-            data.setHandledMood(data.getMood() - 1);
+            data.setHandledMood(data.getMood() - 10);
         }
     }
 
@@ -177,6 +179,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onDataGen(GatherDataEvent event){
+        // 终于用数据生成了吗？哈基g
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
@@ -188,5 +191,17 @@ public class EventHandler {
         if(event.includeClient()){
             generator.addProvider(true, new DataGenerators.AllItemModelProvider(packOutput, LittleMadMod.ModID, existingFileHelper));
         }
+    }
+
+    @SubscribeEvent
+    public static void onRegistryConfig(AddClothConfigEvent event){
+        // 七夕应该和cloth config过
+        var category = event.getRoot().getOrCreateCategory(ConfigScreenGetter.getComponent("title"));
+        ConfigScreenGetter.addCategoryContent(event.getEntryBuilder(), category);
+        var runnable = event.getRoot().getSavingRunnable();
+        event.getRoot().setSavingRunnable(() -> {
+           if(runnable != null)runnable.run();
+           MadMaidFunction.reloadConfig();
+        });
     }
 }

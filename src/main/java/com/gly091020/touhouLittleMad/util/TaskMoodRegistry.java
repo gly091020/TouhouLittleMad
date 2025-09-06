@@ -1,6 +1,7 @@
 package com.gly091020.touhouLittleMad.util;
 
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
+import com.gly091020.touhouLittleMad.config.TaskMoodConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,13 @@ public class TaskMoodRegistry {
     }
 
     public static float getProbability(Class<? extends IMaidTask> task){
+        if(TaskMoodConfig.hasConfigMood(task)){
+            return TaskMoodConfig.getConfigMood(task);
+        }
         return registryData.getOrDefault(task, 0.01f);
+    }
+
+    public static Map<Class<? extends IMaidTask>, Float> getAllTaskMood(){
+        return registryData;
     }
 }

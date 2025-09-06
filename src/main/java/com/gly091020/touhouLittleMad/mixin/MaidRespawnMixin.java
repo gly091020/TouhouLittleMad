@@ -2,7 +2,7 @@ package com.gly091020.touhouLittleMad.mixin;
 
 import com.github.tartaricacid.touhoulittlemaid.block.BlockShrine;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.gly091020.touhouLittleMad.behavior.MaidRespawnEvent;
+import com.gly091020.touhouLittleMad.event.MaidRespawnEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
