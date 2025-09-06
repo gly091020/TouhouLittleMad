@@ -1,8 +1,10 @@
+import com.modrinth.minotaur.dependencies.ModDependency;
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'idea'
     id 'net.neoforged.moddev' version '2.0.107'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 version = mod_version
@@ -141,7 +143,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
                              mod_license            : mod_license,
                              mod_version            : mod_version,
                              mod_authors            : mod_authors,
-                             mod_description        : mod_description]
+                             mod_description        : mod_description,
+    version_description : version_description]
     inputs.properties replaceProperties
     expand replaceProperties
     from "src/main/templates"
@@ -165,6 +168,62 @@ publishing {
         maven {
             url "file://${project.projectDir}/repo"
         }
+    }
+}
+
+modrinth {
+    def envToken = System.getenv("MODRINTH_TOKEN")
+    if (envToken != null && !envToken.isEmpty()) {
+        token = envToken
+    } else {
+        // 如果没有 token，跳过 Modrinth 配置
+        throw new GradleException("错误: MODRINTH_TOKEN 环境变量未设置")
+    }
+    // 从环境变量获取 token，如果没有设置就报错
+    token = System.getenv("MODRINTH_TOKEN");
+
+    projectId = 'GTO2209U'           // 你的 Modrinth 项目 ID
+    versionNumber = mod_version          // 模组版本号
+    versionName = mod_name + " " + mod_version // 版本标题
+    uploadFile = jar             // 上传重映射的 jar 文件
+    gameVersions = [minecraft_version] // 支持的游戏版本
+    loaders = ['neoforge']              // 加载器类型
+    dependencies = [
+            new ModDependency("9s6osm5g", "required"),
+            new ModDependency("R0bDWFAW", "required")
+    ]
+    changelog = version_description
+
+    versionType = "alpha"  // 版本类型
+}
+
+tasks.named('modrinth') {
+    // TM构建脚本全是AI写的
+    dependsOn 'build'  // 确保先构建再上传
+    doFirst {
+        // 命令行确认提示
+        println "=============================================="
+        println "⚠️  即将上传到 Modrinth!"
+        println "📦 项目: $mod_name v$mod_version"
+        println "🎮 版本: $minecraft_version"
+        println "🔧 加载器: neoforge"
+        println "=============================================="
+
+        // 等待用户确认
+        def console = System.console()
+        if (console) {
+            def response = console.readLine("是否继续上传？(y/N): ")
+            if (!response.equalsIgnoreCase("y")) {
+                throw new GradleException("上传已取消")
+            }
+        } else {
+            // 如果没有控制台（如在IDE中），使用缓冲读取器
+            println "无法显示交互提示，5秒后自动继续..."
+            println "按 Ctrl+C 取消上传"
+            Thread.sleep(5000)
+        }
+
+        println "开始上传..."
     }
 }
 
