@@ -124,10 +124,14 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    implementation "curse.maven:touhou-little-maid-355044:6911706"
+    implementation "curse.maven:touhou-little-maid-355044:6988538"
     implementation "curse.maven:jade-324717:6853386"
     runtimeOnly "curse.maven:patchouli-306770:6842247"
     implementation "curse.maven:cloth-config-348521:5729127"
+    implementation "curse.maven:superb-warfare-1218165:6982137"
+    runtimeOnly "curse.maven:geckolib-388172:6920810"
+    runtimeOnly "curse.maven:curios-309927:6529130"
+    runtimeOnly "curse.maven:mob-battle-mod-268746:6803440" // 调试用
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
