@@ -10,6 +10,7 @@ import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
 @Mod(LittleMadMod.ModID)
@@ -28,7 +29,7 @@ public class LittleMadMod {
         AdvancementIconItem.registry(bus);
         GLYToolsRegistry.registry(bus);
         if(!FMLEnvironment.production){
-            bus.register(DebugEventHandler.class);
+            NeoForge.EVENT_BUS.register(DebugEventHandler.class);
         }
     }
 }
