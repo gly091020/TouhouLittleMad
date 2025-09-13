@@ -15,6 +15,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +43,7 @@ public class EventHandler {
                     MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.HURT_BY_OWNER);
                 }
             }else if(data.getCooldown().notInCooldown(CooldownKeys.HURT) && event.getMaid().isHomeModeEnable()){
-                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10));
+                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 5));
                 data.getCooldown().setTimer(CooldownKeys.HURT, 50);
             }
             data.getCooldown().setTimer(CooldownKeys.RECOVER, 60 * 20);
@@ -141,6 +142,9 @@ public class EventHandler {
         if(event.getNewLevel() == MoodLevelType.MAD &&
                 event.getMaid().getOwner() instanceof ServerPlayer player){
             MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.MAD);
+        }
+        if(event.getMaid().level() instanceof ServerLevel level){
+            event.getMaid().refreshBrain(level);
         }
     }
 
