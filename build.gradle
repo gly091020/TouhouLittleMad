@@ -200,6 +200,7 @@ modrinth {
 tasks.named('modrinth') {
     // TM构建脚本全是AI写的
     dependsOn 'build'  // 确保先构建再上传
+    dependsOn 'runGameTestServer' // 你猜为什么有这行代码
     doFirst {
         // 命令行确认提示
         println "=============================================="

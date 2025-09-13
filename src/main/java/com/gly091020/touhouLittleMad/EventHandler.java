@@ -3,18 +3,15 @@ package com.gly091020.touhouLittleMad;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.llm.LLMMessage;
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.AddClothConfigEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
-import com.gly091020.touhouLittleMad.event.MaidAddChatListEvent;
-import com.gly091020.touhouLittleMad.event.MaidRespawnEvent;
 import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
 import com.gly091020.touhouLittleMad.config.ConfigScreenGetter;
 import com.gly091020.touhouLittleMad.datagen.DataGenerators;
+import com.gly091020.touhouLittleMad.event.MaidAddChatListEvent;
 import com.gly091020.touhouLittleMad.event.MaidChangeMoodLevelEvent;
+import com.gly091020.touhouLittleMad.event.MaidRespawnEvent;
 import com.gly091020.touhouLittleMad.event.MaidStopSleepingEvent;
 import com.gly091020.touhouLittleMad.util.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
@@ -122,21 +119,6 @@ public class EventHandler {
                 data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
             event.getPlayer().sendSystemMessage(Component.translatable("gui.touhou_little_mad.not_open"));
             event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRender(RenderMaidEvent event){
-        // 生气粒子
-        if(Minecraft.getInstance().isPaused()){return;}
-        if(event.getMaid() instanceof MaidMadExtraData data &&
-                data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
-            var maid = event.getMaid().asEntity();
-            if(maid.level().getGameTime() % 10 != 0){return;}
-            double d0 = maid.getRandom().nextGaussian() * 0.02;
-            double d1 = maid.getRandom().nextGaussian() * 0.02;
-            double d2 = maid.getRandom().nextGaussian() * 0.02;
-            maid.level().addParticle(ParticleTypes.ANGRY_VILLAGER, maid.getRandomX(1.0F), maid.getRandomY() + (double)0.8F, maid.getRandomZ(1.0F), d0, d1, d2);
         }
     }
 
