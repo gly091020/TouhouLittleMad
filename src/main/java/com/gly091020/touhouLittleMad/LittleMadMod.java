@@ -9,11 +9,12 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 
 @Mod(LittleMadMod.ModID)
 public class LittleMadMod {
-    public static boolean debug = true;
+    public static boolean debug = !FMLEnvironment.production;
 
     public static final String ModID = "touhou_little_mad";
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -26,5 +27,8 @@ public class LittleMadMod {
         AdvancementIconItem.registryBuiltInItem();
         AdvancementIconItem.registry(bus);
         GLYToolsRegistry.registry(bus);
+        if(!FMLEnvironment.production){
+            bus.register(DebugEventHandler.class);
+        }
     }
 }

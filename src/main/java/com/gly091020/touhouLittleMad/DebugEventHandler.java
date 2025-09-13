@@ -4,10 +4,8 @@ import com.gly091020.touhouLittleMad.util.GLYToolsRegistry;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-@EventBusSubscriber
 public class DebugEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerTick(PlayerTickEvent.Pre event){

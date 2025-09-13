@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,9 @@ public class GLYToolsRegistry {
     public static void registry(IEventBus bus){
         registry("player_not_die", () -> simpleItem("防死亡", "防止玩家死亡"));
 
-        ITEMS_REGISTRY.register(bus);
+        if(!FMLEnvironment.production){
+            ITEMS_REGISTRY.register(bus);
+        }
     }
     private static void registry(String name, Supplier<Item> supplier){
         items.put(name, ITEMS_REGISTRY.register(name, supplier));
