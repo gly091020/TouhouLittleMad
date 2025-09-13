@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 public class EventHandler {
     @SubscribeEvent
     public static void onHurt(MaidHurtEvent event){
-        // 当女仆被攻击，如果是主人直接掉最多30心情，否则掉最多1心情并冷却50tick
+        // 当女仆被攻击，如果是主人直接掉最多30心情，否则掉最多1心情(要求没有跟随)并冷却50tick
         // 心情回复冷却1分钟
         if(event.getMaid().level().isClientSide){return;}
         if(!(event.getMaid() instanceof MaidMadExtraData data)){return;}
@@ -41,7 +41,7 @@ public class EventHandler {
                 if(owner instanceof ServerPlayer player){
                     MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.HURT_BY_OWNER);
                 }
-            }else if(data.getCooldown().notInCooldown(CooldownKeys.HURT)){
+            }else if(data.getCooldown().notInCooldown(CooldownKeys.HURT) && event.getMaid().isHomeModeEnable()){
                 data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10));
                 data.getCooldown().setTimer(CooldownKeys.HURT, 50);
             }
