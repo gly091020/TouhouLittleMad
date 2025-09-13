@@ -2,6 +2,7 @@ package com.gly091020.touhouLittleMad;
 
 import com.gly091020.touhouLittleMad.config.LittleMadConfig;
 import com.gly091020.touhouLittleMad.util.AdvancementIconItem;
+import com.gly091020.touhouLittleMad.util.GLYToolsRegistry;
 import com.gly091020.touhouLittleMad.util.MadMaidFunction;
 import com.mojang.logging.LogUtils;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -24,5 +25,6 @@ public class LittleMadMod {
         MadMaidFunction.registryBuiltInTask();
         AdvancementIconItem.registryBuiltInItem();
         AdvancementIconItem.registry(bus);
+        GLYToolsRegistry.registry(bus);
     }
 }
