@@ -10,16 +10,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MaidSnowballTargetTask.class)
+@Mixin(value = MaidSnowballTargetTask.class, remap = false)
 public class PlaySnowBallMixin {
-    @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;J)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;J)V", at = @At("HEAD"), cancellable = true, remap = false)
     public void notPlay(ServerLevel worldIn, EntityMaid maid, long gameTime, CallbackInfo ci){
         if(maid instanceof MaidMadExtraData data && data.getMoodLevel().ordinal() >= MoodLevelType.NORMAL.ordinal()){
             ci.cancel();
         }
     }
 
-    @Inject(method = "start(Lnet/minecraft/server/level/ServerLevel;Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;J)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "start(Lnet/minecraft/server/level/ServerLevel;Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;J)V", at = @At("HEAD"), cancellable = true, remap = false)
     public void notStart(ServerLevel worldIn, EntityMaid maid, long gameTime, CallbackInfo ci){
         if(maid instanceof MaidMadExtraData data && data.getMoodLevel().ordinal() >= MoodLevelType.NORMAL.ordinal()){
             ci.cancel();

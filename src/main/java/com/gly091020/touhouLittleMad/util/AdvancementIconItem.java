@@ -4,18 +4,19 @@ import com.gly091020.touhouLittleMad.LittleMadMod;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdvancementIconItem {
-    private static final DeferredRegister.Items ITEMS_REGISTRY = DeferredRegister.createItems(LittleMadMod.ModID);
-    private static final List<DeferredItem<Item>> ITEMS = new ArrayList<>();
+    private static final DeferredRegister<Item> ITEMS_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, LittleMadMod.ModID);
+    private static final List<RegistryObject<Item>> ITEMS = new ArrayList<>();
 
-    public static List<DeferredItem<Item>> getItems() {
+    public static List<RegistryObject<Item>> getItems() {
         return ITEMS;
     }
 
@@ -36,8 +37,8 @@ public class AdvancementIconItem {
     }
 
     public static Item findItem(String id){
-        for(DeferredItem<Item> deferredItem: ITEMS){
-            var item = deferredItem.asItem();
+        for(RegistryObject<Item> registryObject: ITEMS){
+            var item = registryObject.get();
             if(BuiltInRegistries.ITEM.getKey(item).getPath().equals("advancement_" + id)){
                 return item;
             }

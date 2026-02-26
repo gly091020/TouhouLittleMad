@@ -6,17 +6,18 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.touhouLittleMad.MoodLevelType;
 import com.gly091020.touhouLittleMad.util.MadMaidFunction;
 import com.gly091020.touhouLittleMad.util.MaidMadExtraData;
+import com.gly091020.touhouLittleMad.util.MathUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(RandomEmoji.class)
+@Mixin(value = RandomEmoji.class, remap = false)
 public abstract class TextBubbleMixin {
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/entity/chatbubble/ChatBubbleManager;addChatBubble(Lcom/github/tartaricacid/touhoulittlemaid/entity/chatbubble/IChatBubbleData;)J"), cancellable = true)
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/entity/chatbubble/ChatBubbleManager;addChatBubble(Lcom/github/tartaricacid/touhoulittlemaid/entity/chatbubble/IChatBubbleData;)J"), cancellable = true, remap = false)
     private static void addBubble(EntityMaid maid, CallbackInfo ci){
         // 女仆生气时减少对话气泡显示
-        if(maid instanceof MaidMadExtraData data && maid.getRandom().nextFloat() <= (Math.clamp(data.getMood(), 60, 120) - 60) / 60f){
+        if(maid instanceof MaidMadExtraData data && maid.getRandom().nextFloat() <= (MathUtil.clamp(data.getMood(), 60, 120) - 60) / 60f){
             if(data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
                 maid.getChatBubbleManager().addChatBubble(TextChatBubbleData.type2(MadMaidFunction.getMadText(maid)));
             }

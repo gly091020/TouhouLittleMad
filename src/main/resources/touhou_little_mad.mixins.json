@@ -2,15 +2,14 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.gly091020.touhouLittleMad.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "GunMaidHurtPlayerMixin",
     "MaidAIChatMixin",
     "MaidDataMixin",
     "MaidRespawnMixin",
     "PlaySnowBallMixin",
-    "SleepingMixins$StopSleepingByHurtMixin",
-    "SleepingMixins$StopSleepingMixin",
+    "StopSleepingMixin",
     "TextBubbleMixin"
   ],
   "client": [
