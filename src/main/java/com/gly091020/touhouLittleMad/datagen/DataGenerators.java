@@ -11,7 +11,6 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ForgeAdvancementProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.network.chat.Component;
@@ -27,10 +26,14 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.ForgeAdvancementProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -64,7 +67,7 @@ public class DataGenerators {
 
                 var pool = LootPool.lootPool();
                 pool.setRolls(ConstantValue.exactly(1));
-                items.forEach((item, weight) ->{
+                items.forEach((item, weight) -> {
                     pool.add(LootItem.lootTableItem(item).setWeight(weight).apply(
                             SetItemCountFunction.setCount(ConstantValue.exactly(1))));
                 });
@@ -80,7 +83,7 @@ public class DataGenerators {
             super(output, registries, existingFileHelper, List.of(new AllAdvancementGenerator()));
         }
 
-        public static class AllAdvancementGenerator implements ForgeAdvancementProvider.AdvancementGenerator{
+        public static class AllAdvancementGenerator implements ForgeAdvancementProvider.AdvancementGenerator {
             @Override
             public void generate(HolderLookup.@NotNull Provider provider, @NotNull Consumer<Advancement> consumer, @NotNull ExistingFileHelper existingFileHelper) {
                 var root = genRoot(consumer, existingFileHelper);
@@ -90,22 +93,22 @@ public class DataGenerators {
                 genMad(hurt2, consumer, existingFileHelper);
             }
 
-            private Component getTitle(String id){
+            private Component getTitle(String id) {
                 return Component.translatable(String.format("advancements.touhou_little_mad.%s.title", id));
             }
 
-            private Component getDescription(String id){
+            private Component getDescription(String id) {
                 return Component.translatable(String.format("advancements.touhou_little_mad.%s.description", id));
             }
 
-            private Advancement genRoot(Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper){
+            private Advancement genRoot(Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper) {
                 return genBase(AdvancementIconItem.findItem("little_mad"), "little_mad", "tamed_maid",
                         new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/advancements/backgrounds/stone.png"))
                         .save(consumer, new ResourceLocation(LittleMadMod.ModID, "little_mad"), existingFileHelper);
             }
 
             private Advancement.Builder genBase(ItemStack item, String name, String triggerName, @Nullable ResourceLocation bg,
-                                                FrameType type, boolean showToast, boolean hidden){
+                                                FrameType type, boolean showToast, boolean hidden) {
                 return Advancement.Builder.advancement()
                         .display(new DisplayInfo(
                                 item,
@@ -119,39 +122,39 @@ public class DataGenerators {
                         )).addCriterion(triggerName, MaidEventTrigger.create(triggerName));
             }
 
-            private Advancement.Builder genBase(Item item, String name, String triggerName, @Nullable ResourceLocation bg){
+            private Advancement.Builder genBase(Item item, String name, String triggerName, @Nullable ResourceLocation bg) {
                 return genBase(new ItemStack(item, 1), name, triggerName, bg, FrameType.TASK, false, false);
             }
 
-            private Advancement.Builder genBase(Item item, String name, String triggerName, FrameType type, boolean showToast, boolean hidden){
+            private Advancement.Builder genBase(Item item, String name, String triggerName, FrameType type, boolean showToast, boolean hidden) {
                 return genBase(new ItemStack(item, 1), name, triggerName, null, type, showToast, hidden);
             }
 
-            private Advancement.Builder genBase(Item item, String name, String triggerName){
+            private Advancement.Builder genBase(Item item, String name, String triggerName) {
                 return genBase(new ItemStack(item, 1), name, triggerName, null, FrameType.TASK, true, false);
             }
 
-            private Advancement genGift(Advancement parent, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper){
+            private Advancement genGift(Advancement parent, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper) {
                 return genBase(AdvancementIconItem.findItem("maid_gift"), "maid_gift", AdvancementTriggerKeys.SEND_GIFT)
                         .parent(parent)
                         .save(consumer, new ResourceLocation(LittleMadMod.ModID, "maid_gift"), existingFileHelper);
             }
 
-            private Advancement genHurtByOwner(Advancement parent, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper){
+            private Advancement genHurtByOwner(Advancement parent, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper) {
                 return genBase(AdvancementIconItem.findItem("maid_hurt_by_owner"),
                         "maid_hurt_by_owner", AdvancementTriggerKeys.HURT_BY_OWNER)
                         .parent(parent)
                         .save(consumer, new ResourceLocation(LittleMadMod.ModID, "maid_hurt_by_owner"), existingFileHelper);
             }
 
-            private Advancement genHurtOwner(Advancement parent, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper){
+            private Advancement genHurtOwner(Advancement parent, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper) {
                 return genBase(AdvancementIconItem.findItem("maid_hurt_owner"),
                         "maid_hurt_owner", AdvancementTriggerKeys.HURT_OWNER)
                         .parent(parent)
                         .save(consumer, new ResourceLocation(LittleMadMod.ModID, "maid_hurt_owner"), existingFileHelper);
             }
 
-            private Advancement genMad(Advancement parent, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper){
+            private Advancement genMad(Advancement parent, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper) {
                 return genBase(AdvancementIconItem.findItem("maid_mad"),
                         "maid_mad", AdvancementTriggerKeys.MAD, FrameType.CHALLENGE, true, true)
                         .parent(parent)

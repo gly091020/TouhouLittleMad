@@ -157,7 +157,8 @@ public class IdieToMadBehavior extends Behavior<EntityMaid> {
         // 处理不同触发状态
         switch (triggerState) {
             case INITIAL -> handleInitialTrigger(level, maid, target, data);
-            case ATTACKING -> {} // 攻击中，无需操作
+            case ATTACKING -> {
+            } // 攻击中，无需操作
             case RESET -> handleResetState(maid);
         }
     }
