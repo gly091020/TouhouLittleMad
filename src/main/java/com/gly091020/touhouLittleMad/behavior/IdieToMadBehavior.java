@@ -157,7 +157,8 @@ public class IdieToMadBehavior extends Behavior<EntityMaid> {
         // 处理不同触发状态
         switch (triggerState) {
             case INITIAL -> handleInitialTrigger(level, maid, target, data);
-            case ATTACKING -> {} // 攻击中，无需操作
+            case ATTACKING -> {
+            } // 攻击中，无需操作
             case RESET -> handleResetState(maid);
         }
     }
@@ -252,7 +253,7 @@ public class IdieToMadBehavior extends Behavior<EntityMaid> {
         int mood = data.getMood();
         if (mood >= 90) {
             // 计算罢工概率：心情90-120对应0%-1%的罢工概率
-            float strikeChance = (Math.clamp(mood, 90, 120) - 90) / 30.0f / 50.0f;
+            float strikeChance = (com.gly091020.touhouLittleMad.util.MathUtil.clamp(mood, 90, 120) - 90) / 30.0f / 50.0f;
 
             if (random.nextFloat() <= strikeChance) {
                 maid.setTask(new TaskIdle());

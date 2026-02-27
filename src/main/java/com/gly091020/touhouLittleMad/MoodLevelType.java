@@ -3,10 +3,11 @@ package com.gly091020.touhouLittleMad;
 import net.minecraft.network.chat.Component;
 
 public enum MoodLevelType {
-    GOOD,NORMAL,BAD,MAD;
-    public static MoodLevelType getType(int mood){
+    GOOD, NORMAL, BAD, MAD;
+
+    public static MoodLevelType getType(int mood) {
         // 女仆心情等级
-        if(mood >= 180){
+        if (mood >= 180) {
             return MAD;
         } else if (mood >= 120) {
             return BAD;
@@ -16,36 +17,62 @@ public enum MoodLevelType {
         return GOOD;
     }
 
-    public float getAddMagnification(){
-        switch (this){
-            case GOOD -> {return 1;}
-            case NORMAL -> {return 1.5f;}
-            case BAD -> {return 2;}
-            default -> {return 0;}
+    public float getAddMagnification() {
+        switch (this) {
+            case GOOD -> {
+                return 1;
+            }
+            case NORMAL -> {
+                return 1.5f;
+            }
+            case BAD -> {
+                return 2;
+            }
+            default -> {
+                return 0;
+            }
         }
     }
 
-    public float getSubMagnification(){
-        switch (this){
-            case NORMAL -> {return 0.75f;}
-            case BAD -> {return 0.5f;}
-            case MAD -> {return 0f;}
-            default -> {return 1f;}
+    public float getSubMagnification() {
+        switch (this) {
+            case NORMAL -> {
+                return 0.75f;
+            }
+            case BAD -> {
+                return 0.5f;
+            }
+            case MAD -> {
+                return 0f;
+            }
+            default -> {
+                return 1f;
+            }
         }
     }
 
-    public String getDebugText(){
-        switch (this){
-            case GOOD -> {return "开心";}
-            case NORMAL -> {return "正常";}
-            case BAD -> {return "伤心";}
-            case MAD -> {return "可以换人了";}
-            default -> {return "未知";}
+    public String getDebugText() {
+        switch (this) {
+            case GOOD -> {
+                return "开心";
+            }
+            case NORMAL -> {
+                return "正常";
+            }
+            case BAD -> {
+                return "伤心";
+            }
+            case MAD -> {
+                return "可以换人了";
+            }
+            default -> {
+                return "未知";
+            }
         }
     }
 
-    public int getAttackSpeed(){
-        switch (this){
+    public int getAttackSpeed() {
+        switch (this) {
             case GOOD -> {
                 return 8;
             }
@@ -58,12 +85,12 @@ public enum MoodLevelType {
         }
     }
 
-    public Component getName(){
+    public Component getName() {
         return Component.translatable("gui.touhou_little_mad.mood_level." + this.toString().toLowerCase());
     }
 
-    public float getAttackDamageMagnification(){
-        switch (this){
+    public float getAttackDamageMagnification() {
+        switch (this) {
             case GOOD -> {
                 return 1.5f;
             }
@@ -79,8 +106,8 @@ public enum MoodLevelType {
         }
     }
 
-    public String getPrompt(){
-        switch (this){
+    public String getPrompt() {
+        switch (this) {
             case GOOD -> {
                 return "The maid is in a cheerful mood. She feels happy and positive, speaks kindly, and shows affection toward her master.";
             }

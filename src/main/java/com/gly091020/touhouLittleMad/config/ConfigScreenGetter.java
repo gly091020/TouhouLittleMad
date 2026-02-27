@@ -8,12 +8,11 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.neoforged.fml.ModContainer;
 
 import static com.gly091020.touhouLittleMad.LittleMadMod.CONFIG;
 
 public class ConfigScreenGetter {
-    public static Screen getConfigScreen(ModContainer mc, Screen parent){
+    public static Screen getConfigScreen(Screen parent) {
         var configBuilder = ConfigBuilder.create();
         configBuilder.setParentScreen(parent).setTitle(getComponent("title"));
         var category = configBuilder.getOrCreateCategory(configBuilder.getTitle());
@@ -23,7 +22,7 @@ public class ConfigScreenGetter {
         return configBuilder.build();
     }
 
-    public static void addCategoryContent(ConfigEntryBuilder entryBuilder, ConfigCategory category){
+    public static void addCategoryContent(ConfigEntryBuilder entryBuilder, ConfigCategory category) {
         category.addEntry(entryBuilder.startBooleanToggle(getComponent("enable_attack"), CONFIG.enableAttack)
                 .setDefaultValue(true)
                 .setSaveConsumer(b -> CONFIG.enableAttack = b)
@@ -36,24 +35,25 @@ public class ConfigScreenGetter {
                 .build());
         var moods = entryBuilder.startSubCategory(getComponent("task_mood"));
         var taskMoods = TaskMoodRegistry.getAllTaskMood();
-        for (Class<? extends IMaidTask> taskClass: taskMoods.keySet()) {
+        for (Class<? extends IMaidTask> taskClass : taskMoods.keySet()) {
             try {
                 moods.add(entryBuilder.startFloatField(taskClass.getDeclaredConstructor().newInstance().getName(), TaskMoodRegistry.getProbability(taskClass))
-                                .setDefaultValue(TaskMoodRegistry.getAllTaskMood().getOrDefault(taskClass, 0.01f))
+                        .setDefaultValue(TaskMoodRegistry.getAllTaskMood().getOrDefault(taskClass, 0.01f))
                         .setSaveConsumer(m -> TaskMoodConfig.setConfigMood(taskClass, m))
                         .build());
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         category.addEntry(moods.build());
     }
 
-    public static Component getEnableOrDisableText(boolean enable){
+    public static Component getEnableOrDisableText(boolean enable) {
         return enable ? Component.literal("§a")
                 .append(getComponent("enable")) : Component.literal("§a")
                 .append(getComponent("disable"));
     }
 
-    public static Component getComponent(String name){
+    public static Component getComponent(String name) {
         return Component.translatable("config.touhou_little_mad." + name);
     }
 }

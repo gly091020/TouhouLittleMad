@@ -17,18 +17,18 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.List;
 
-@Mixin(AbstractMaidContainerGui.class)
+@Mixin(value = AbstractMaidContainerGui.class)
 public abstract class MaidInfoMixin {
-    @Shadow
+    @Shadow(remap = false)
     @Final
     protected EntityMaid maid;
 
     @Redirect(method = "renderMaidInfo", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderComponentTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;II)V"))
-    public void addData(GuiGraphics instance, Font font, List<Component> list, int x, int y){
-        if(LittleMadMod.debug){
+    public void addData(GuiGraphics instance, Font font, List<Component> list, int x, int y) {
+        if (LittleMadMod.debug) {
             MadMaidFunction.getDebugTooltip(this.maid, list);
         }
-        if(maid instanceof MaidMadExtraData data){
+        if (maid instanceof MaidMadExtraData data) {
             list.add(Component.literal("§a█ ").withStyle(ChatFormatting.WHITE).append(
                             Component.translatable("gui.touhou_little_mad.mood_level.mood").append(": ")
                                     .withStyle(ChatFormatting.AQUA))

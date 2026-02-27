@@ -9,7 +9,7 @@ import com.gly091020.touhouLittleMad.behavior.IdieToMadBehavior;
 import com.gly091020.touhouLittleMad.util.GunBehaviorsAdd;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
-import net.neoforged.fml.ModList;
+import net.minecraftforge.fml.ModList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +27,14 @@ public class MaidMadPlugin implements ILittleMaid {
         public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> getCoreBehaviors() {
             var be = new ArrayList<Pair<Integer, BehaviorControl<? super EntityMaid>>>();
             be.add(Pair.of(100, new IdieToMadBehavior()));
-            if(hasGunMod()){
+            if (hasGunMod()) {
                 GunBehaviorsAdd.add(be);
             }
             return be;
         }
     }
 
-    public static boolean hasGunMod(){
+    public static boolean hasGunMod() {
         return ModList.get().isLoaded("tacz") || ModList.get().isLoaded("superbwarfare");
     }
 }

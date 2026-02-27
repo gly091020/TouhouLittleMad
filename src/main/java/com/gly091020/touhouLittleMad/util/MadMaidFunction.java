@@ -3,7 +3,6 @@ package com.gly091020.touhouLittleMad.util;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidSchedule;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.*;
-import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
@@ -12,37 +11,35 @@ import com.gly091020.touhouLittleMad.config.LittleMadConfig;
 import com.gly091020.touhouLittleMad.config.TaskMoodConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import java.util.List;
 import java.util.Objects;
 
 public class MadMaidFunction {
-    private static final ResourceLocation GIFT_LOOT_TABLE = ResourceLocation.fromNamespaceAndPath(LittleMadMod.ModID, "maid_gift");
-    public static boolean canRecoverMood(EntityMaid maid){
+    private static final ResourceLocation GIFT_LOOT_TABLE = new ResourceLocation(LittleMadMod.ModID, "maid_gift");
+
+    public static boolean canRecoverMood(EntityMaid maid) {
         // 女仆只有非全天工作才能回复心情
         return maid.getSchedule() != MaidSchedule.ALL;
     }
 
-    public static void getDebugTooltip(EntityMaid maid, List<Component> list){
-        if(maid instanceof MaidMadExtraData data){
+    public static void getDebugTooltip(EntityMaid maid, List<Component> list) {
+        if (maid instanceof MaidMadExtraData data) {
             list.add(Component.literal("LittleMad调试："));
             list.add(Component.literal("内部心情：" + Objects.toString(data.getMood())));
             list.add(Component.literal("心情等级：" + data.getMoodLevel().getDebugText()));
         }
     }
 
-    public static void registryBuiltInTask(){
+    public static void registryBuiltInTask() {
         TaskMoodRegistry.registry(TaskAttack.class, 1f / 1200);
         TaskMoodRegistry.registry(TaskBoardGames.class, 0f);
         TaskMoodRegistry.registry(TaskBowAttack.class, 1f / 1400);
@@ -66,46 +63,48 @@ public class MadMaidFunction {
         TaskMoodRegistry.registry(TaskTridentAttack.class, 1f / 1400);
     }
 
-    public static ItemStack getGift(EntityMaid maid){
-        if(!(maid.level() instanceof ServerLevel level)){
+    public static ItemStack getGift(EntityMaid maid) {
+        if (!(maid.level() instanceof ServerLevel level)) {
             return ItemStack.EMPTY.copy();
         }
-        var loot_table = level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, GIFT_LOOT_TABLE));
-        var items = loot_table.getRandomItems(new LootParams.Builder(level).create(LootContextParamSet.builder().build()));
-        if(items.isEmpty()){
+        var loot_table = level.getServer().getLootData().getLootTable(GIFT_LOOT_TABLE);
+        var params = new LootParams.Builder(level).create(LootContextParamSets.GIFT);
+        var items = loot_table.getRandomItems(params);
+        if (items.isEmpty()) {
             return ItemStack.EMPTY.copy();
-        }else{
-            if(items.getFirst().is(InitItems.GARAGE_KIT)){
+        } else {
+            ItemStack result = items.get(0);
+            if (result.is(InitItems.GARAGE_KIT.get())) {
                 var tag = new CompoundTag();
                 maid.saveWithoutId(tag);
                 tag.putString("id", Objects.requireNonNull(BuiltInRegistries.ENTITY_TYPE.getKey(InitEntities.MAID.get())).toString());
-                items.getFirst().set(InitDataComponent.MAID_INFO, CustomData.of(tag));
+                result.getOrCreateTag().put("MaidData", tag);
             }
-            return items.getFirst();
+            return result;
         }
     }
 
-    public static Component getMadText(EntityMaid maid){
+    public static Component getMadText(EntityMaid maid) {
         final int count = 5;
-        return Component.translatable("entity.touhou_little_mad.mad." + maid.getRandom().nextIntBetweenInclusive(1, count));
+        return Component.translatable("entity.touhou_little_mad.mad." + (1 + maid.getRandom().nextInt(count)));
     }
 
-    public static void maidTrigger(ServerPlayer serverPlayer, String key){
-        InitTrigger.MAID_EVENT.value().trigger(serverPlayer, key);
+    public static void maidTrigger(ServerPlayer serverPlayer, String key) {
+        InitTrigger.MAID_EVENT.trigger(serverPlayer, key);
     }
 
-    public static void loadConfig(){
+    public static void loadConfig() {
         LittleMadMod.CONFIG = AutoConfig.getConfigHolder(LittleMadConfig.class).getConfig();
         TaskMoodConfig.load();
     }
 
-    public static void saveConfig(){
+    public static void saveConfig() {
         AutoConfig.getConfigHolder(LittleMadConfig.class).setConfig(LittleMadMod.CONFIG);
         AutoConfig.getConfigHolder(LittleMadConfig.class).save();
         TaskMoodConfig.save();
     }
 
-    public static void reloadConfig(){
+    public static void reloadConfig() {
         saveConfig();
         loadConfig();
     }

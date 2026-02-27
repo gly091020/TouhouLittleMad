@@ -1,0 +1,26 @@
+{
+  "parent": "touhou_little_mad:little_mad",
+  "display": {
+    "icon": {
+      "item": "touhou_little_mad:advancement_maid_hurt_by_owner"
+    },
+    "title": {
+      "translate": "advancements.touhou_little_mad.maid_hurt_by_owner.title"
+    },
+    "description": {
+      "translate": "advancements.touhou_little_mad.maid_hurt_by_owner.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "hurt_by_owner": {
+      "trigger": "touhou_little_maid:maid/tamed_maid",
+      "conditions": {
+        "event": "hurt_by_owner"
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ package com.gly091020.touhouLittleMad;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.llm.LLMMessage;
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.AddClothConfigEvent;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.touhouLittleMad.behavior.MaidSendGiftGoal;
 import com.gly091020.touhouLittleMad.config.ConfigScreenGetter;
 import com.gly091020.touhouLittleMad.datagen.DataGenerators;
@@ -19,31 +20,37 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = LittleMadMod.ModID)
+@Mod.EventBusSubscriber(modid = LittleMadMod.ModID)
 public class EventHandler {
     @SubscribeEvent
-    public static void onHurt(MaidHurtEvent event){
+    public static void onHurt(MaidHurtEvent event) {
         // 当女仆被攻击，如果是主人直接掉最多30心情，否则掉最多1心情(要求没有跟随)并冷却50tick
         // 心情回复冷却1分钟
-        if(event.getMaid().level().isClientSide){return;}
-        if(!(event.getMaid() instanceof MaidMadExtraData data)){return;}
+        if (event.getMaid().level().isClientSide) {
+            return;
+        }
+        if (!(event.getMaid() instanceof MaidMadExtraData data)) {
+            return;
+        }
         var owner = event.getMaid().getOwner();
-        if(owner != null){
-            if(owner == event.getSource().getEntity()){
-                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 30));
-                if(owner instanceof ServerPlayer player){
+        if (owner != null) {
+            if (owner == event.getSource().getEntity()) {
+                data.setHandledMood(data.getMood() + (int) (MathUtil.clamp(event.getAmount() * 10, 0, 10) / 10 * 30));
+                if (owner instanceof ServerPlayer player) {
                     MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.HURT_BY_OWNER);
                 }
-            }else if(data.getCooldown().notInCooldown(CooldownKeys.HURT) && event.getMaid().isHomeModeEnable()){
-                data.setHandledMood(data.getMood() + (int) (Math.clamp(event.getAmount() * 10, 0, 10) / 10 * 5));
+            } else if (data.getCooldown().notInCooldown(CooldownKeys.HURT) && event.getMaid().isHomeModeEnable()) {
+                data.setHandledMood(data.getMood() + (int) (MathUtil.clamp(event.getAmount() * 10, 0, 10) / 10 * 5));
                 data.getCooldown().setTimer(CooldownKeys.HURT, 50);
             }
             data.getCooldown().setTimer(CooldownKeys.RECOVER, 60 * 20);
@@ -51,23 +58,25 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void tick(MaidTickEvent event){
+    public static void tick(MaidTickEvent event) {
         // 心情每次回复冷却10秒
         // 女仆工作时随机减少心情
-        if(event.getEntity().level().isClientSide){return;}
+        if (event.getEntity().level().isClientSide) {
+            return;
+        }
         var maid = event.getMaid();
-        if(event.getEntity() instanceof MaidMadExtraData data){
+        if (event.getEntity() instanceof MaidMadExtraData data) {
             var cooldown = data.getCooldown();
             cooldown.tick();
-            if(cooldown.notInCooldown(CooldownKeys.RECOVER) && MadMaidFunction.canRecoverMood(maid)){
+            if (cooldown.notInCooldown(CooldownKeys.RECOVER) && MadMaidFunction.canRecoverMood(maid)) {
                 data.setHandledMood(data.getMood() - 1);
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 20);
             }
             var probability = TaskMoodRegistry.getProbability(maid.getTask().getClass());
-            if(probability > 0 && maid.getRandom().nextFloat() < probability){
+            if (probability > 0 && maid.getRandom().nextFloat() < probability) {
                 data.setHandledMood(data.getMood() + 1);
             }
-            if(data.getMoodLevel() == MoodLevelType.GOOD && cooldown.notInCooldown(CooldownKeys.ADD_POINT)){
+            if (data.getMoodLevel() == MoodLevelType.GOOD && cooldown.notInCooldown(CooldownKeys.ADD_POINT)) {
                 // 女仆开心时增加好感度并冷却8~10分钟
                 maid.getFavorabilityManager().add(1);
                 cooldown.setTimer(CooldownKeys.ADD_POINT, (int) ((8 + 2 * maid.getRandom().nextFloat()) * 10 * 20));
@@ -76,18 +85,28 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void stopSleepEvent(MaidStopSleepingEvent event){
+    public static void onLivingAttack(LivingAttackEvent event) {
+        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity().isSleeping() && event.getSource().getEntity() instanceof EntityMaid maid) {
+            MinecraftForge.EVENT_BUS.post(new MaidStopSleepingEvent(maid, true));
+        }
+    }
+
+    @SubscribeEvent
+    public static void stopSleepEvent(MaidStopSleepingEvent event) {
         // 女仆起床如果是被攻击扣30点心情并冷却回复两分钟，否则回复10点心情
         var maid = event.getMaid();
-        if(maid.level().isClientSide){return;}
-        if(maid instanceof MaidMadExtraData data){
+        if (maid.level().isClientSide) {
+            return;
+        }
+        if (maid instanceof MaidMadExtraData data) {
             if (event.isByHurt()) {
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 2 * 60 * 20);
                 data.setHandledMood(data.getMood() + 30);
-            }else{
+            } else {
                 data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 20);
                 data.setHandledMood(data.getMood() - 10);
-                if(data.getMoodLevel() == MoodLevelType.GOOD && maid.getOwner() instanceof Player player && maid.position().closerThan(player.position(), 10)){
+                if (data.getMoodLevel() == MoodLevelType.GOOD && maid.getOwner() instanceof Player player && maid.position().closerThan(player.position(), 10)) {
                     maid.goalSelector.addGoal(10, new MaidSendGiftGoal(maid));
                 }
             }
@@ -95,109 +114,114 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void onDie(MaidDeathEvent event){
+    public static void onDie(MaidDeathEvent event) {
         // 女仆死亡减少50心情并冷却恢复10分钟（最高110防止复活了接着打）
-        if(event.getMaid().level().isClientSide){return;}
-        if(event.getMaid() instanceof MaidMadExtraData data){
-            data.setMood(Math.clamp(data.getMood() + 50, 50, 110));
+        if (event.getMaid().level().isClientSide) {
+            return;
+        }
+        if (event.getMaid() instanceof MaidMadExtraData data) {
+            data.setMood(MathUtil.clamp(data.getMood() + 50, 50, 110));
             data.getCooldown().setTimer(CooldownKeys.RECOVER, 10 * 60 * 20);
         }
     }
 
     @SubscribeEvent
-    public static void onEat(MaidAfterEatEvent event){
+    public static void onEat(MaidAfterEatEvent event) {
         // 吃东西加5心情
-        if(event.getMaid().level().isClientSide){return;}
-        if(event.getMaid() instanceof MaidMadExtraData data &&
-                MadMaidFunction.canRecoverMood(event.getMaid())){
+        if (event.getMaid().level().isClientSide) {
+            return;
+        }
+        if (event.getMaid() instanceof MaidMadExtraData data &&
+                MadMaidFunction.canRecoverMood(event.getMaid())) {
             data.setHandledMood(data.getMood() - 5);
         }
     }
+
     @SubscribeEvent
-    public static void onInteractMaid(InteractMaidEvent event){
+    public static void onInteractMaid(InteractMaidEvent event) {
         // 女仆生气打人时不能打开ui
-        if(!event.getPlayer().isCreative() && event.getMaid() instanceof MaidMadExtraData data &&
-                data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
+        if (!event.getPlayer().isCreative() && event.getMaid() instanceof MaidMadExtraData data &&
+                data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()) {
             event.getPlayer().sendSystemMessage(Component.translatable("gui.touhou_little_mad.not_open"));
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public static void onChangeMoodLevel(MaidChangeMoodLevelEvent event){
+    public static void onChangeMoodLevel(MaidChangeMoodLevelEvent event) {
         // 女仆心情好时增加攻击速度和攻击伤害（生气也会）
         // （但是女仆好像不使用攻击速度属性）
         var attack_speed = event.getMaid().getAttribute(Attributes.ATTACK_SPEED);
-        if(attack_speed != null){
+        if (attack_speed != null) {
             attack_speed.setBaseValue(event.getNewLevel().getAttackSpeed());
         }
 
         var attack = event.getMaid().getAttribute(Attributes.ATTACK_DAMAGE);
-        if(attack != null){
+        if (attack != null) {
             var manager = event.getMaid().getFavorabilityManager();
             attack.setBaseValue(manager.getAttackByLevel(manager.getLevel()) *
                     event.getNewLevel().getAttackDamageMagnification());
         }
 
-        if(event.getNewLevel() == MoodLevelType.MAD &&
-                event.getMaid().getOwner() instanceof ServerPlayer player){
+        if (event.getNewLevel() == MoodLevelType.MAD &&
+                event.getMaid().getOwner() instanceof ServerPlayer player) {
             MadMaidFunction.maidTrigger(player, AdvancementTriggerKeys.MAD);
         }
-        if(event.getMaid().level() instanceof ServerLevel level){
+        if (event.getMaid().level() instanceof ServerLevel level) {
             event.getMaid().refreshBrain(level);
         }
     }
 
     @SubscribeEvent
-    public static void onMaidAttack(LivingDamageEvent.Post event){
+    public static void onMaidAttack(LivingDamageEvent event) {
         // 女仆每次攻击主人恢复十点心情
         // 不用 MaidAttackEvent 因为生气攻击不归这个事件管
-        if(event.getSource().getEntity() instanceof MaidMadExtraData data && data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()){
+        if (event.getSource().getEntity() instanceof MaidMadExtraData data && data.getMoodLevel().ordinal() >= MoodLevelType.BAD.ordinal()) {
             data.setHandledMood(data.getMood() - 10);
         }
     }
 
     @SubscribeEvent
-    public static void onMaidRespawn(MaidRespawnEvent event){
+    public static void onMaidRespawn(MaidRespawnEvent event) {
         // 限制女仆心情范围
-        if(event.getMaid() instanceof MaidMadExtraData data){
-            data.setMood(Math.clamp(data.getMood(), 0, 110));
+        if (event.getMaid() instanceof MaidMadExtraData data) {
+            data.setMood(MathUtil.clamp(data.getMood(), 0, 110));
         }
     }
 
     @SubscribeEvent
-    public static void onDataGen(GatherDataEvent event){
+    public static void onDataGen(GatherDataEvent event) {
         // 终于用数据生成了吗？哈基g
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         if (event.includeServer()) {
-            generator.addProvider(true, new DataGenerators.LootTableGen(packOutput, lookupProvider));
+            generator.addProvider(true, new DataGenerators.LootTableGen(packOutput));
             generator.addProvider(true, new DataGenerators.AllAdvancementProvider(packOutput, lookupProvider, existingFileHelper));
         }
-        if(event.includeClient()){
+        if (event.includeClient()) {
             generator.addProvider(true, new DataGenerators.AllItemModelProvider(packOutput, LittleMadMod.ModID, existingFileHelper));
         }
     }
 
     @SubscribeEvent
-    public static void onRegistryConfig(AddClothConfigEvent event){
+    public static void onRegistryConfig(AddClothConfigEvent event) {
         // 七夕应该和cloth config过
         var category = event.getRoot().getOrCreateCategory(ConfigScreenGetter.getComponent("title"));
         ConfigScreenGetter.addCategoryContent(event.getEntryBuilder(), category);
         var runnable = event.getRoot().getSavingRunnable();
         event.getRoot().setSavingRunnable(() -> {
-           if(runnable != null)runnable.run();
-           MadMaidFunction.reloadConfig();
+            if (runnable != null) runnable.run();
+            MadMaidFunction.reloadConfig();
         });
     }
 
     @SubscribeEvent
-    public static void onAddChatList(MaidAddChatListEvent event){
+    public static void onAddChatList(MaidAddChatListEvent event) {
         // 心情会反馈到对话里
         // 但不过AI好像太听话了一点不生气……
-        if(event.getMaid() instanceof MaidMadExtraData data){
+        if (event.getMaid() instanceof MaidMadExtraData data) {
             event.addChat(LLMMessage.systemChat(event.getMaid(), data.getMoodLevel().getPrompt()));
         }
     }
