@@ -17,13 +17,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.List;
 
-@Mixin(value = AbstractMaidContainerGui.class, remap = false)
+@Mixin(value = AbstractMaidContainerGui.class)
 public abstract class MaidInfoMixin {
-    @Shadow
+    @Shadow(remap = false)
     @Final
     protected EntityMaid maid;
 
-    @Redirect(method = "renderMaidInfo", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;m_280666_(Lnet/minecraft/client/gui/Font;Ljava/util/List;II)V"))
+    @Redirect(method = "renderMaidInfo", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderComponentTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;II)V"))
     public void addData(GuiGraphics instance, Font font, List<Component> list, int x, int y) {
         if (LittleMadMod.debug) {
             MadMaidFunction.getDebugTooltip(this.maid, list);

@@ -32,7 +32,7 @@ import java.util.Objects;
                 iface = MaidMadExtraData.class, prefix = "MaidDataMixin$"
         )
 })
-@Mixin(value = EntityMaid.class, remap = false)
+@Mixin(value = EntityMaid.class)
 public abstract class MaidDataMixin implements MaidMadExtraData {
     @Unique
     private static final EntityDataAccessor<Integer> MOOD = SynchedEntityData.defineId(EntityMaid.class, EntityDataSerializers.INT);
@@ -40,13 +40,13 @@ public abstract class MaidDataMixin implements MaidMadExtraData {
     @Unique
     private MaidCooldown cooldown = new MaidCooldown();
 
-    @Inject(method = "m_7380_", at = @At("RETURN"))
+    @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
     public void addData(CompoundTag compound, CallbackInfo ci) {
         compound.putInt("MaidMood", getMood());
         cooldown.saveToNbt(compound);
     }
 
-    @Inject(method = "m_7378_", at = @At("RETURN"))
+    @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
     public void readData(CompoundTag compound, CallbackInfo ci) {
         if (compound.contains("MaidMood", CompoundTag.TAG_INT)) {
             this.setHandledMood(compound.getInt("MaidMood"));
@@ -54,7 +54,7 @@ public abstract class MaidDataMixin implements MaidMadExtraData {
         cooldown = MaidCooldown.readFromNbt(compound);
     }
 
-    @Inject(method = "m_8097_", at = @At("RETURN"))
+    @Inject(method = "defineSynchedData", at = @At("RETURN"))
     public void defineData(CallbackInfo ci) {
         ((EntityMaid) (Object) this).getEntityData().define(MOOD, 0);
     }
@@ -107,7 +107,7 @@ public abstract class MaidDataMixin implements MaidMadExtraData {
         return cooldown;
     }
 
-    @Inject(method = "m_7515_", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "getAmbientSound", at = @At("TAIL"), cancellable = true)
     public void getSound(CallbackInfoReturnable<SoundEvent> cir) {
         // 没有用事件系统因为无法区分音效
         if (cir.getReturnValue() == null) {

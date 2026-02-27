@@ -160,14 +160,14 @@ dependencies {
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${minecraft_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
-    implementation "curse.maven:touhou-little-maid-355044:${touhou_maid_id}"
-    implementation "curse.maven:jade-324717:${jade_id}"
-    runtimeOnly "curse.maven:patchouli-306770:${patchouli_id}"
-    implementation "curse.maven:cloth-config-348521:${cloth_config_id}"
-    implementation "curse.maven:superb-warfare-1218165:${superb_warfare_id}"
-    runtimeOnly "curse.maven:geckolib-388172:${geckolib_id}"
-    runtimeOnly "curse.maven:curios-309927:${curios_id}"
-    runtimeOnly "curse.maven:mob-battle-mod-268746:${mob_battle_id}" // 调试用
+    implementation fg.deobf("curse.maven:touhou-little-maid-355044:${touhou_maid_id}")
+    implementation fg.deobf("curse.maven:cloth-config-348521:${cloth_config_id}")
+    implementation fg.deobf("curse.maven:jade-324717:${jade_id}")
+    implementation fg.deobf("curse.maven:superb-warfare-1218165:${superb_warfare_id}")
+    runtimeOnly fg.deobf("curse.maven:patchouli-306770:${patchouli_id}")
+    runtimeOnly fg.deobf("curse.maven:geckolib-388172:${geckolib_id}")
+    runtimeOnly fg.deobf("curse.maven:curios-309927:${curios_id}")
+    runtimeOnly fg.deobf("curse.maven:mob-battle-mod-268746:${mob_battle_id}") // 调试用
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

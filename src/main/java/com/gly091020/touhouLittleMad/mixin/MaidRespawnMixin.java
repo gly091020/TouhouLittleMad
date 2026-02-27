@@ -18,9 +18,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = BlockShrine.class, remap = false)
+@Mixin(value = BlockShrine.class)
 public class MaidRespawnMixin {
-    @Inject(method = "m_6227_", at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/advancements/maid/MaidEventTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Ljava/lang/String;)V"), remap = false)
+    @Inject(method = "use", at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/advancements/maid/MaidEventTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Ljava/lang/String;)V"), remap = false)
     private void onRespawn(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
         // 很烂的写法
         var entities = worldIn.getNearbyEntities(EntityMaid.class, TargetingConditions.DEFAULT, playerIn, new AABB(pos).inflate(1));

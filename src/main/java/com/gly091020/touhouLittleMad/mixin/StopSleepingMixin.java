@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = MaidClearSleepTask.class, remap = false)
+@Mixin(value = MaidClearSleepTask.class)
 public class StopSleepingMixin {
     @Inject(method = "start(Lnet/minecraft/server/level/ServerLevel;Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;J)V",
-            at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;m_5796_()V"), remap = false)
+            at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;stopSleeping()V"), remap = false)
     public void onClearSleep(ServerLevel worldIn, EntityMaid entityIn, long gameTimeIn, CallbackInfo ci) {
         MinecraftForge.EVENT_BUS.post(new MaidStopSleepingEvent(entityIn, false));
     }
